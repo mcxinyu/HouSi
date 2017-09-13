@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/white"/>
+    <item
+        android:id="@+id/launch_screens_zhiye_logo"
+        android:bottom="@dimen/launch_screens_logo_bottom">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/splash_logo"/>
+    </item>
+    <item
+        android:id="@+id/launch_screens_logo_text"
+        android:bottom="@dimen/launch_screens_name_logo_bottom">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/splash_name"/>
+    </item>
+</layer-list>

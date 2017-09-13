@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
