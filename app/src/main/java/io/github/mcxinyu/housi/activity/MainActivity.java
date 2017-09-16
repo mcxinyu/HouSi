@@ -1,59 +1,154 @@
 package io.github.mcxinyu.housi.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.pgyersdk.feedback.PgyFeedback;
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
+import com.pgyersdk.views.PgyerDialog;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
+import io.github.mcxinyu.housi.fragment.ABaseFragment;
+import io.github.mcxinyu.housi.fragment.BasicFragment;
+import io.github.mcxinyu.housi.util.CheckUpdateHelper;
+import io.github.mcxinyu.housi.util.QueryPreferences;
 
 /**
  * Created by huangyuefeng on 2017/9/13.
  * Contact me : mcxinyu@gmail.com
  */
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseAppCompatActivity
+        implements ABaseFragment.FragmentCallbacks, BasicFragment.Callbacks {
+    private static final int WHAT_CHECK_UPDATE = 1024;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.fragment_container)
+    FrameLayout mFragmentContainer;
+    @BindView(R.id.no_su_text_view)
+    TextView mNoSuTextView;
+    private Unbinder unbinder;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (!QueryPreferences.getDrawerOpenState(MainActivity.this)) {
+                mDrawerLayout.openDrawer(Gravity.START);
+                QueryPreferences.setDrawerOpenState(MainActivity.this, true);
+            }
+
+            switch (msg.what) {
+                case WHAT_CHECK_UPDATE:
+                    checkForUpdate();
+                    break;
+            }
+        }
+    };
+
+    private FragmentManager mFragmentManager;
+    private Fragment currentFragment;
+
+    private BasicFragment mBasicFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme_NoActionBar);
+        setTheme(R.style.AppTheme_NoActionBar_TransparentStatusBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        unbinder = ButterKnife.bind(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        initDrawer();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mFragmentManager = getSupportFragmentManager();
+        currentFragment = mFragmentManager.findFragmentById(R.id.fragment_container);
+
+        if (currentFragment == null) {
+            currentFragment = mBasicFragment = BasicFragment.newInstance();
+            mFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, currentFragment)
+                    .commit();
+        }
+
+        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 6000);
+    }
+
+    private void initDrawer() {
+        setSupportActionBar(mToolbar);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_basic:
+                        if (mBasicFragment == null) {
+                            mBasicFragment = BasicFragment.newInstance();
+                        }
+                        switchFragment(mBasicFragment);
+                        break;
+                    case R.id.nav_source:
+                        break;
+                    case R.id.nav_setting:
+                        break;
+                    case R.id.nav_feedback:
+                        showPgyerDialog();
+                        break;
+                }
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+        TextView versionTextView = mNavView.getHeaderView(0).findViewById(R.id.version_text_view);
+        versionTextView.setText(getString(R.string.version) + ":" + BuildConfig.VERSION_NAME + "-" + BuildConfig.GIT_COMMIT);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+        currentFragment = null;
+        PgyUpdateManager.unregister();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (!(currentFragment instanceof BasicFragment)) {
+            switchFragment(mBasicFragment);
         } else {
             super.onBackPressed();
         }
@@ -61,48 +156,87 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        // getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        // int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        // if (id == R.id.action_settings) {
+        //     return true;
+        // }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    private void switchFragment(Fragment fragment) {
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (currentFragment != fragment) {
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            if (fragment.isAdded()) {
+                transaction.hide(currentFragment)
+                        .show(fragment)
+                        .commit();
+            } else {
+                transaction.hide(currentFragment)
+                        .add(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            // currentFragment.setUserVisibleHint(false);
+            // fragment.setUserVisibleHint(true);
+            currentFragment = fragment;
         }
+    }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+    private void showPgyerDialog() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START, false);
+        }
+        PgyerDialog.setDialogTitleBackgroundColor("#FF4081");
+        PgyFeedback.getInstance().showDialog(this);
+    }
+
+    private void checkForUpdate() {
+
+        PgyUpdateManager.register(MainActivity.this, "io.github.mcxinyu.housi.pgy",
+                new UpdateManagerListener() {
+                    @Override
+                    public void onNoUpdateAvailable() {
+
+                    }
+
+                    @Override
+                    public void onUpdateAvailable(String result) {
+                        Log.d("MainActivity", result);
+                        final AppBean appBean = getAppBeanFromString(result);
+
+                        if (Integer.parseInt(appBean.getVersionCode()) >
+                                CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)) {
+                            if (appBean.getVersionName().contains("force")) {
+                                CheckUpdateHelper.buildForceUpdateDialog(MainActivity.this, appBean);
+                            } else {
+                                CheckUpdateHelper.buildUpdateDialog(MainActivity.this, appBean);
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void setDrawerMenuClicked(int item) {
+        mNavView.getMenu().findItem(item).setChecked(true);
+    }
+
+    @Override
+    public void hasRoot(boolean hasRoot) {
+        mNoSuTextView.setVisibility(hasRoot ? View.INVISIBLE : View.VISIBLE);
     }
 }
