@@ -23,4 +23,6 @@
     <string name="reset_hosts_success">重置 hosts 成功</string>
     <string name="reset_hosts_failure">重置 hosts 失败</string>
     <string name="error">好像哪里出错了</string>
+    <string name="network_error">网络出错</string>
+    <string name="network_connect_error">网络连接出错</string>
 </resources>
