@@ -1,8 +1,9 @@
 package io.github.mcxinyu.housi.api;
 
-import io.github.mcxinyu.housi.bean.BaseConfig;
+import io.github.mcxinyu.housi.bean.SourceConfig;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -12,9 +13,8 @@ import rx.Observable;
  */
 public interface SourceApi {
 
-    @GET
-    Observable<BaseConfig> getBaseConfig();
-
+    @GET("{source_key}/raw?blob_name=source.json")
+    Observable<SourceConfig> getSourceConfig(@Path("source_key") String sourceKey);
 
     @GET
     Observable<ResponseBody> getSourceHosts(@Url String source);

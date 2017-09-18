@@ -1,10 +1,11 @@
 package io.github.mcxinyu.housi.fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 
 /**
  * Created by huangyuefeng on 2017/9/14.
@@ -28,15 +29,17 @@ public abstract class ABaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCallbacks.setToolbarTitle(getToolBarTitle());
         mCallbacks.setDrawerMenuClicked(getMenuItemId());
+        mCallbacks.initToolbar(getToolBar());
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // mCallbacks.setToolbarTitle(getToolBarTitle());
-        // mCallbacks.setDrawerMenuClicked(getMenuItemId());
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            mCallbacks.setDrawerMenuClicked(getMenuItemId());
+            mCallbacks.initToolbar(getToolBar());
+        }
     }
 
     @Override
@@ -46,12 +49,12 @@ public abstract class ABaseFragment extends Fragment {
     }
 
     public interface FragmentCallbacks {
-        void setToolbarTitle(String title);
-
         void setDrawerMenuClicked(int item);
+
+        void initToolbar(Toolbar toolbar);
     }
 
-    protected abstract String getToolBarTitle();
+    protected abstract Toolbar getToolBar();
 
     @IdRes
     protected abstract int getMenuItemId();

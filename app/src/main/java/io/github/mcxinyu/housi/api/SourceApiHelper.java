@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.github.mcxinyu.housi.BuildConfig;
+import io.github.mcxinyu.housi.bean.SourceConfig;
 import io.github.mcxinyu.housi.util.StaticValues;
 import okhttp3.ResponseBody;
 import rx.Observable;
@@ -19,6 +21,10 @@ import rx.functions.Func1;
 public class SourceApiHelper {
 
     private static final SourceApi SOURCE_API = ApiFactory.getSourceApi();
+
+    public static Observable<SourceConfig> getSourceConfig() {
+        return SOURCE_API.getSourceConfig(BuildConfig.SOURCE_KEY);
+    }
 
     public static Observable<File> getSourceHosts(final Context context, String source) {
         return SOURCE_API.getSourceHosts(source)

@@ -17,6 +17,7 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by 跃峰 on 2016/9/18.
@@ -27,7 +28,7 @@ public class ApiRetrofit {
 
     private SourceApi mSourceApi;
 
-    public static final String BASE_CONFIG_URL = "https://housi.mcxinyu.github.io/";
+    public static final String BASE_CONFIG_URL = "https://gitee.com/mcxinyu/codes/";
     public static final String BASE_TEMP_URL = "https://raw.githubusercontent.com/googlehosts/hosts/master/hosts-files/hosts";
 
     public SourceApi getSourceApi() {
@@ -41,7 +42,7 @@ public class ApiRetrofit {
         Cache cache = new Cache(httpCacheDirectory, cacheSize);
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         if (BuildConfig.DEBUG) {
-            // loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         }
 
         OkHttpClient client = new OkHttpClient.Builder()
@@ -55,7 +56,7 @@ public class ApiRetrofit {
         Retrofit retrofitHosts = new Retrofit.Builder()
                 .baseUrl(BASE_CONFIG_URL)
                 .client(client)
-                // .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 

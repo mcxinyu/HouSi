@@ -27,6 +27,7 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"${System.currentTimeMillis()}\""
         buildConfigField "String", "GIT_COMMIT", "\"${gitCommit}\""
         buildConfigField "String", "GIT_COMMIT", "\"${gitCommit}\""
+        buildConfigField "String", "SOURCE_KEY", project.source_key
         manifestPlaceholders = [com_google_android_backup_api_key: project.com_google_android_backup_api_key,
                                 pgyer_appid                      : project.pgyer_appid]
     }

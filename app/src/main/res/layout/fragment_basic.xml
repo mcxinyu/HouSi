@@ -1,94 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/this_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/icon_image_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:clickable="false"
-        android:src="@drawable/logo_512"
-        app:layout_heightPercent="20%"
-        app:layout_marginTopPercent="10%"
-        app:layout_widthPercent="100%"/>
-
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/icon_image_view"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:clickable="false"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
-        android:textSize="30sp"
-        app:layout_marginTopPercent="5%"/>
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <TextView
-        android:id="@+id/app_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/app_name"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:clickable="false"
-        android:gravity="center"
-        android:text="@string/app_description"
-        android:textSize="16sp"
-        app:layout_marginTopPercent="2%"/>
-
-    <LinearLayout
-        android:id="@+id/button_activate"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_heightPercent="30%"
-        app:layout_marginBottomPercent="10%"
-        app:layout_marginTopPercent="60%"
-        app:layout_widthPercent="50%">
-
-        <Button
-            android:id="@+id/update_hosts_button"
-            style="@style/Widget.AppCompat.Button.Colored"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:text="@string/update_hosts"
-            android:textAllCaps="false"
-            android:textSize="16sp"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-        <Button
-            android:id="@+id/reset_hosts_button"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/reset_hosts"
-            android:textAllCaps="false"
-            android:textSize="16sp"/>
+    </android.support.design.widget.AppBarLayout>
 
-        <Button
-            android:id="@+id/read_hosts_button"
-            android:layout_width="match_parent"
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/icon_image_view"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/read_hosts"
-            android:textAllCaps="false"
-            android:textSize="16sp"/>
-    </LinearLayout>
-</android.support.percent.PercentRelativeLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:src="@drawable/logo_512"
+            app:layout_heightPercent="20%"
+            app:layout_marginTopPercent="10%"
+            app:layout_widthPercent="100%"/>
+
+        <TextView
+            android:id="@+id/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/icon_image_view"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+            android:textSize="30sp"
+            app:layout_marginTopPercent="5%"/>
+
+        <TextView
+            android:id="@+id/app_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_name"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/app_description"
+            android:textSize="16sp"
+            app:layout_marginTopPercent="2%"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_heightPercent="30%"
+            app:layout_marginBottomPercent="10%"
+            app:layout_marginTopPercent="60%"
+            app:layout_widthPercent="50%">
+
+            <Button
+                android:id="@+id/update_hosts_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="@string/update_hosts"
+                android:textAllCaps="false"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/reset_hosts_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/reset_hosts"
+                android:textAllCaps="false"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/read_hosts_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/read_hosts"
+                android:textAllCaps="false"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </android.support.percent.PercentRelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
