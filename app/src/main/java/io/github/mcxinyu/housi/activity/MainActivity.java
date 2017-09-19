@@ -62,7 +62,7 @@ public class MainActivity extends BaseAppCompatActivity
         public void handleMessage(Message msg) {
             if (!QueryPreferences.getDrawerOpenState(MainActivity.this)) {
                 // mDrawerLayout.openDrawer(Gravity.START);
-                QueryPreferences.setDrawerOpenState(MainActivity.this, true);
+                // QueryPreferences.setDrawerOpenState(MainActivity.this, true);
             }
 
             switch (msg.what) {
