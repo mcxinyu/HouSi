@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -58,6 +59,8 @@ public class BasicFragment extends ABaseFragment {
     Button mResetHostsButton;
     @BindView(R.id.read_hosts_button)
     Button mReadHostsButton;
+    @BindView(R.id.parent_view)
+    CoordinatorLayout mParentView;
     private Unbinder unbinder;
 
     public static BasicFragment newInstance() {
@@ -230,7 +233,7 @@ public class BasicFragment extends ABaseFragment {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         dialog.dismiss();
-                        Toast.makeText(getActivity(), StateUtils.handleException(e), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(mParentView, StateUtils.handleException(e), Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -238,14 +241,14 @@ public class BasicFragment extends ABaseFragment {
                         switch (integer) {
                             case -2:
                             case -1:
-                                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
                                 mCallbacks.hasRoot(false);
                                 break;
                             case 0:
-                                Toast.makeText(getActivity(), getString(R.string.update_hosts_success), Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mParentView, getString(R.string.update_hosts_success), Snackbar.LENGTH_SHORT).show();
                                 break;
                             default:
-                                Toast.makeText(getActivity(), getString(R.string.update_hosts_failure), Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mParentView, getString(R.string.update_hosts_failure), Snackbar.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -296,17 +299,17 @@ public class BasicFragment extends ABaseFragment {
             dialog.dismiss();
 
             if (!suAvailable) {
-                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
                 mCallbacks.hasRoot(suAvailable);
             } else if (suResult != null) {
                 for (int i = 0; i < suResult.size(); i++) {
                     LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
                 }
-                Toast.makeText(getContext(),
+                Snackbar.make(mParentView,
                         suResult.size() == 0 ? getString(R.string.reset_hosts_success) : getString(R.string.reset_hosts_failure),
-                        Toast.LENGTH_SHORT).show();
+                        Snackbar.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
             }
         }
     }
