@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="source_routing_entries">
+        <item>@string/source_routing_built_in</item>
+        <item>@string/source_routing_diy</item>
+        <item>@string/source_routing_file</item>
+    </string-array>
+
+    <string-array name="source_routing_entry_values">
+        <item>1024</item>
+        <item>1025</item>
+        <item>1026</item>
+    </string-array>
+</resources>

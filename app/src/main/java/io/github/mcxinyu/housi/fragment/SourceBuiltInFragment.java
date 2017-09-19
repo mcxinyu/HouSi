@@ -1,18 +1,22 @@
 package io.github.mcxinyu.housi.fragment;
 
-import android.content.DialogInterface;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
+import android.widget.Toast;
 
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
 import io.github.mcxinyu.housi.bean.SourceConfig;
+import io.github.mcxinyu.housi.util.QueryPreferences;
+import io.github.mcxinyu.housi.util.ValidatedEditTextPreference;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -26,7 +30,7 @@ public class SourceBuiltInFragment extends PreferenceFragment {
 
     PreferenceScreen mSourceBuiltInUpdate;
     ListPreference mSourceBuiltInList;
-    EditTextPreference mSourceBuiltInDownloadUrl;
+    ValidatedEditTextPreference mSourceBuiltInDownloadUrl;
     PreferenceScreen mSourceBuiltInDate;
 
     public static SourceBuiltInFragment newInstance() {
@@ -48,7 +52,7 @@ public class SourceBuiltInFragment extends PreferenceFragment {
     private void initPreferences() {
         mSourceBuiltInUpdate = (PreferenceScreen) findPreference("source_built_in_update");
         mSourceBuiltInList = (ListPreference) findPreference("source_built_in_item");
-        mSourceBuiltInDownloadUrl = (EditTextPreference) findPreference("source_built_in_download_url");
+        mSourceBuiltInDownloadUrl = (ValidatedEditTextPreference) findPreference("source_built_in_download_url");
         mSourceBuiltInDate = (PreferenceScreen) findPreference("source_built_in_date");
 
         mSourceBuiltInUpdate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -90,22 +94,38 @@ public class SourceBuiltInFragment extends PreferenceFragment {
     }
 
     private void updateUI() {
-        mSourceBuiltInUpdate.setSummary(getString(R.string.source_built_in_update_refresh_success));
+        QueryPreferences.setSourceRouting(getActivity(), 0);
+
+        mSourceBuiltInUpdate.setSummary(getString(R.string.source_built_in_update_refresh_when) + " " + mSourceConfig.getServerTime());
 
         mSourceBuiltInList.setEntryValues(mSourceConfig.getValueArray());
         mSourceBuiltInList.setEntries(mSourceConfig.getNameArray());
-        mSourceBuiltInList.setDefaultValue(mSourceConfig.getNameArray()[0]);
+        mSourceBuiltInList.setValue(mSourceConfig.getValueArray()[0]);
         mSourceBuiltInList.setSummary(mSourceConfig.getNameArray()[0]);
         mSourceBuiltInList.setSelectable(true);
-        mSourceBuiltInList.getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
+        mSourceBuiltInList.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-                return false;
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                mSourceBuiltInList.setSummary(mSourceConfig.getNameArray()[Integer.parseInt((String) o)]);
+                mSourceBuiltInDownloadUrl.setText(mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
+                mSourceBuiltInDownloadUrl.setSummary(mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
+                return true;
             }
         });
 
         mSourceBuiltInDownloadUrl.setText(mSourceConfig.getResult().get(0).getUrl());
         mSourceBuiltInDownloadUrl.setSummary(mSourceConfig.getResult().get(0).getUrl());
+        mSourceBuiltInDownloadUrl.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newRawUri(preference.getSummary(),
+                        Uri.parse(preference.getSummary().toString()));
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(getActivity(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         mSourceBuiltInDownloadUrl.setSelectable(true);
     }
 }

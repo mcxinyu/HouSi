@@ -33,6 +33,7 @@ import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.fragment.ABaseFragment;
 import io.github.mcxinyu.housi.fragment.BasicFragment;
+import io.github.mcxinyu.housi.fragment.SourceFileFragment;
 import io.github.mcxinyu.housi.fragment.SourceFragment;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -43,7 +44,7 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
  */
 public class MainActivity extends BaseAppCompatActivity
         implements ABaseFragment.FragmentCallbacks, BasicFragment.Callbacks,
-        SourceFragment.Callbacks {
+        SourceFragment.Callbacks, SourceFileFragment.Callbacks {
 
     private static final int WHAT_CHECK_UPDATE = 1024;
 

@@ -13,7 +13,7 @@ public class SourceConfig {
     @SerializedName("status")
     private String status;
     @SerializedName("server_time")
-    private int serverTime;
+    private String serverTime;
     @SerializedName("result")
     private List<ResultBean> result;
 
@@ -25,11 +25,11 @@ public class SourceConfig {
         this.status = status;
     }
 
-    public int getServerTime() {
+    public String getServerTime() {
         return serverTime;
     }
 
-    public void setServerTime(int serverTime) {
+    public void setServerTime(String serverTime) {
         this.serverTime = serverTime;
     }
 

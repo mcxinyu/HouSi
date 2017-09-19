@@ -28,6 +28,7 @@ android {
         buildConfigField "String", "GIT_COMMIT", "\"${gitCommit}\""
         buildConfigField "String", "GIT_COMMIT", "\"${gitCommit}\""
         buildConfigField "String", "SOURCE_KEY", project.source_key
+        buildConfigField "String", "DEFAULT_HOSTS_URL", project.default_hosts_url
         manifestPlaceholders = [com_google_android_backup_api_key: project.com_google_android_backup_api_key,
                                 pgyer_appid                      : project.pgyer_appid]
     }
