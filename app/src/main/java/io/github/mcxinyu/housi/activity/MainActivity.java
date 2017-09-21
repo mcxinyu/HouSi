@@ -30,6 +30,7 @@ import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.fragment.ABaseFragment;
 import io.github.mcxinyu.housi.fragment.BasicFragment;
+import io.github.mcxinyu.housi.fragment.SettingsFragment;
 import io.github.mcxinyu.housi.fragment.SourceFileFragment;
 import io.github.mcxinyu.housi.fragment.SourceFragment;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
@@ -76,6 +77,7 @@ public class MainActivity extends BaseAppCompatActivity
     private Fragment currentFragment;
     private BasicFragment mBasicFragment;
     private SourceFragment mSourceFragment;
+    private SettingsFragment mSettingsFragment;
 
     private boolean isPgyRegister = false;
 
@@ -124,6 +126,9 @@ public class MainActivity extends BaseAppCompatActivity
                         switchFragment(mSourceFragment);
                         break;
                     case R.id.nav_setting:
+                        if (mSettingsFragment == null)
+                            mSettingsFragment = SettingsFragment.newInstance();
+                        switchFragment(mSettingsFragment);
                         break;
                     case R.id.nav_feedback:
                         showPgyerDialog();
