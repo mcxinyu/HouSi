@@ -52,4 +52,5 @@
     <string name="source_file_note">请自行确保文件是正确格式的 hosts 文件。\n选好文件后会直接应用该 hosts 文件。</string>
     <string name="select_a_file_to_apply">选择一个文件</string>
     <string name="please_install_a_file_manager">找不到文件管理器呢！</string>
+    <string name="has_nothing">你点了。</string>
 </resources>

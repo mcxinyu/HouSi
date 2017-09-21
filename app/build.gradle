@@ -12,12 +12,12 @@ android {
             storePassword project.storePassword
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 25
     buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId project.APPLICATION_ID
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,10 +37,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled false
             debuggable false
-            shrinkResources = true
+//            shrinkResources = true
             signingConfig signingConfigs.housi_release
         }
         debug {
+            minifyEnabled false
             debuggable true
             signingConfig signingConfigs.housi_release
         }
@@ -81,6 +82,7 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:percent:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:customtabs:25.3.1'
     //
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
@@ -106,4 +108,6 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.8.1@aar') {
         transitive = true
     }
+    //
+    compile 'com.haozhang.libary:android-slanted-textview:1.2'
 }

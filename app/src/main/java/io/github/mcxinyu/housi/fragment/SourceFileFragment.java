@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -44,6 +45,20 @@ public class SourceFileFragment extends PreferenceFragment {
 
     private Callbacks mCallbacks;
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity instanceof Callbacks) {
+                mCallbacks = (Callbacks) activity;
+            } else {
+                throw new RuntimeException(activity.toString()
+                        + " must implement Callbacks");
+            }
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -51,7 +66,7 @@ public class SourceFileFragment extends PreferenceFragment {
             mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement BackHandledInterface");
+                    + " must implement Callbacks");
         }
     }
 
@@ -94,6 +109,7 @@ public class SourceFileFragment extends PreferenceFragment {
                 Uri uri = intent.getData();
                 try {
                     String path = getUriFilePath(uri);
+                    mSourceFilePath.setSummary(path);
                     new HandleHosts(path).execute();
                 } catch (Exception e) {
                     mSourceFilePath.setSummary(getString(R.string.error));
@@ -152,7 +168,7 @@ public class SourceFileFragment extends PreferenceFragment {
 
             suResult = Shell.SU.run(new String[]{
                     StaticValues.MOUNT_SYSTEM_RW,
-                    "cp " + mFilePath + " " + StaticValues.SYSTEM_HOST_FILE_PATH,
+                    "cp " + mFilePath + " " + StaticValues.SYSTEM_HOSTS_FILE_PATH,
                     StaticValues.MOUNT_SYSTEM_RO
             });
 
@@ -165,23 +181,23 @@ public class SourceFileFragment extends PreferenceFragment {
             dialog.dismiss();
 
             if (!suAvailable) {
-                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-                mCallbacks.hasRoot(suAvailable);
+                Toast.makeText(getActivity(), getString(R.string.no_su), Toast.LENGTH_SHORT).show();
+                // mCallbacks.hasRoot(suAvailable);
             } else if (suResult != null) {
                 mSourceFilePath.setSummary(mFilePath + " " + getString(R.string.update_hosts_success));
                 for (int i = 0; i < suResult.size(); i++) {
                     LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
                 }
-                Toast.makeText(getContext(),
+                Toast.makeText(getActivity(),
                         suResult.size() == 0 ? getString(R.string.reset_hosts_success) : getString(R.string.reset_hosts_failure),
                         Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     public interface Callbacks {
-        void hasRoot(boolean hasRoot);
+        // void hasRoot(boolean hasRoot);
     }
 }
