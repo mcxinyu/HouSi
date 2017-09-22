@@ -1,6 +1,6 @@
 ### 后司是什么？
 
-[后司](https://github.com/mcxinyu/HouSi)是一个可以简单修改 hosts 的 Android 应用，本应用与其代码由 [@mcxinyu](https://github.com/mcxinyu) 创作或维护。   
+[后司](https://github.com/mcxinyu/HouSi) 是一个可以简单修改 hosts 的 Android 应用，本应用与其代码由 [@mcxinyu](https://github.com/mcxinyu) 创作或维护。   
 它是一个免费应用，使用它不收取您任何费用。其中的所有 hosts 内容均来自网络（Internet）并由其他项目组织者维护。
 
 如果你觉得该应用不符合你的信仰，请尽快删除并不要告知作者。
@@ -21,7 +21,7 @@
 
 #### 更新_hosts
 
-最基本的使用是在应用的“基本”页，直接点击“更新 hosts”即可。
+最基本的使用是在应用的“基本”页，直接点击“更新 hosts”即可。hosts 来源可能受“来源”页设置的影响而获取到不同的 hosts，可以在设置中查看到当前具体的 hosts 来源地址。
 
 #### 重置_hosts
 
