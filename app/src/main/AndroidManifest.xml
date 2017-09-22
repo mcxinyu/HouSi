@@ -46,9 +46,11 @@
 
         </activity>
 
+        <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="io.github.mcxinyu.housi.checkupdate"
+            android:authorities="io.github.mcxinyu.housi"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

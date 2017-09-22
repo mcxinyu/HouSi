@@ -1,8 +1,11 @@
 package io.github.mcxinyu.housi.activity;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,19 +13,24 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pgyersdk.feedback.PgyFeedback;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.views.PgyerDialog;
+import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +46,8 @@ import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
 
+import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
+
 /**
  * Created by huangyuefeng on 2017/9/13.
  * Contact me : mcxinyu@gmail.com
@@ -45,7 +55,7 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
 public class MainActivity extends BaseAppCompatActivity
         implements ABaseFragment.Callbacks, BasicFragment.Callbacks,
         SourceFragment.Callbacks, SourceFileFragment.Callbacks {
-
+    private static final String TAG = "MainActivity";
     private static final int WHAT_CHECK_UPDATE = 1024;
 
     @BindView(R.id.fragment_container)
@@ -81,6 +91,7 @@ public class MainActivity extends BaseAppCompatActivity
     private SettingsFragment mSettingsFragment;
 
     private boolean isPgyRegister = false;
+    private UpdateDialog mUpdateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,15 +231,52 @@ public class MainActivity extends BaseAppCompatActivity
 
                         if (Integer.parseInt(appBean.getVersionCode()) >
                                 CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)) {
-                            if (appBean.getVersionName().contains("force")) {
-                                CheckUpdateHelper.buildForceUpdateDialog(MainActivity.this, appBean);
-                            } else {
-                                CheckUpdateHelper.buildUpdateDialog(MainActivity.this, appBean);
-                            }
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("更新")
+                                    .setMessage(appBean.getReleaseNote())
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            startDownloadTask(MainActivity.this, appBean.getDownloadURL());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .show();
                         }
                     }
                 });
         isPgyRegister = true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //如果用户同意所请求的权限
+        if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //所以在进行判断时,必须要结合这两个常量进行判断.
+            if (requestCode == UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
+                //进行下载操作
+                mUpdateDialog.download();
+            }
+        } else {
+            //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
+            Toast.makeText(this, "程序将无法正常运行", Toast.LENGTH_SHORT).show();
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Log.e(TAG, "false.请开启读写sd卡权限,不然无法正常工作");
+            } else {
+                Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
+            }
+        }
     }
 
     @Override
