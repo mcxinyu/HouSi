@@ -55,7 +55,7 @@
     <string name="has_nothing">你点了。</string>
     <string name="support_and_help">支持和帮助</string>
     <string name="setting_check_for_update">检查更新</string>
-    <string name="setting_this_app">本程序相关</string>
+    <string name="setting_this_app">本应用相关</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="about_cache">缓存文件大部分是下载的 hosts 源文件。</string>
     <string name="setting_others_about">关于</string>
@@ -65,5 +65,7 @@
     <string name="clean_cache_up">清理完成</string>
     <string name="clean_cache_fail">清理失败</string>
     <string name="about_title">关于</string>
-    <string name="aboutLibraries_description_text">『后司』是一个可以简单修改 hosts 的程序，本软件与其代码由 @mcxinyu 创作或维护。它是一个免费软件，使用它不收取您任何费用。其中的所有 hosts 内容均可通过网络获取并有其他项目组织者维护。本程序使用了包括但不仅限于一下开源库。</string>
+    <string name="aboutLibraries_description_text">『后司』是一个可以简单修改 hosts 的应用，本应用与其代码由 <a href="https://github.com/mcxinyu">@mcxinyu</a> 创作或维护。它是一个免费应用，使用它不收取您任何费用。其中的所有 hosts 内容均来自网络（Internet）并由其他项目组织者维护。\n本应用使用了包括但不仅限于以下开源库。</string>
+    <string name="checking_for_update">正在检查更新</string>
+    <string name="has_new_version">有新版本啦，请尽快更新！</string>
 </resources>

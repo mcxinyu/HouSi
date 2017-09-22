@@ -28,7 +28,9 @@ public class SettingsFragment extends ABaseFragment {
     FrameLayout mFragmentContainer;
     @BindView(R.id.parent_view)
     CoordinatorLayout mParentView;
-    Unbinder unbinder;
+    private Unbinder unbinder;
+
+    Fragment mFragment;
 
     public static SettingsFragment newInstance() {
 
@@ -46,11 +48,11 @@ public class SettingsFragment extends ABaseFragment {
         unbinder = ButterKnife.bind(this, view);
 
         FragmentManager fragmentManager = getChildFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-        if (fragment == null) {
-            fragment = PreferencesFragment.newInstance();
+        mFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        if (mFragment == null) {
+            mFragment = PreferencesFragment.newInstance();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .add(R.id.fragment_container, mFragment)
                     .commit();
         }
         return view;
@@ -71,5 +73,13 @@ public class SettingsFragment extends ABaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((PreferencesFragment) mFragment).initSourceUrl();
+        }
     }
 }
