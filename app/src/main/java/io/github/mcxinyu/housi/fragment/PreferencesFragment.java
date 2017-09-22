@@ -12,6 +12,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
@@ -302,6 +303,15 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                 .start(getActivity());
     }
 
+    private void showFaqTab() {
+        String faqUrl = BuildConfig.FAQ_URL;
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
+        CustomTabsIntent intent = builder.build();
+        intent.launchUrl(getActivity(), Uri.parse(faqUrl));
+    }
+
     @Override
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
@@ -316,6 +326,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                 clearAppCache();
                 return true;
             case "setting_faq":
+                showFaqTab();
                 return true;
             case "setting_feedback":
                 showPgyerDialog();
