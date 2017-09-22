@@ -1,6 +1,6 @@
 
 # 后司 用于修改 hosts
-
+![](https://github.com/mcxinyu/HouSi/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png)
 ## 后司是什么？
 [后司](https://github.com/mcxinyu/HouSi) 是一个可以简单修改 hosts 的 Android 应用，本应用与其代码由 [@mcxinyu](https://github.com/mcxinyu) 创作或维护。   
 它是一个免费应用，使用它不收取您任何费用。其中的所有 hosts 内容均来自网络（Internet）并由其他项目组织者维护。
@@ -8,7 +8,10 @@
 如果你觉得该应用不符合你的信仰，请尽快删除并不要告知作者。
 
 ## 下载安装
-[后司 下载安装](https://www.pgyer.com/housi)
+本应用目前只在以下两个位置提供下载安装，其他位置不可信。   
+
+[后司 下载安装](https://www.pgyer.com/housi)   
+[github releases](https://github.com/mcxinyu/HouSi/releases)
 
 ## 常见问题与帮助
 [常见问题与帮助](https://github.com/mcxinyu/HouSi/blob/master/faq/faq.md)
