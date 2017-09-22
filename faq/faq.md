@@ -59,4 +59,4 @@
 
 ### 加入 Telegram 讨论群
 
-本应用 Telegram 讨论群寄居在 [Google Hosts女装交♂友群](https://t.me/googlehosts)
+本应用 Telegram 讨论群寄居在 [Google Hosts女装交♂友群](https://t.me/googlehosts)，我可能会被机器人踢走。
