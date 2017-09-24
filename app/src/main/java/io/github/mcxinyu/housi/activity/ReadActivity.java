@@ -1,11 +1,11 @@
 package io.github.mcxinyu.housi.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -35,7 +35,7 @@ public class ReadActivity extends BaseAppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame_layout_container);
 
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
         Fragment fragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
         if (fragment == null) {

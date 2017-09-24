@@ -1,12 +1,12 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
 /**

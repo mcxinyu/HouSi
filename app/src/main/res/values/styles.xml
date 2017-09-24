@@ -16,6 +16,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
@@ -24,6 +25,7 @@
 
     <style name="AppTheme.NoActionBar.TransparentStatusBar" parent="AppTheme.NoActionBar">
         <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
 </resources>

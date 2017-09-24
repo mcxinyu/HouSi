@@ -8,13 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
@@ -39,7 +38,8 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
  * Created by huangyuefeng on 2017/9/21.
  * Contact me : mcxinyu@gmail.com
  */
-public class PreferencesFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class PreferencesFragment extends PreferenceFragmentCompat
+        implements Preference.OnPreferenceClickListener {
     private static final String TAG = "PreferencesFragment";
 
     private PreferenceScreen mSettingCurrentSourceUrl;
@@ -48,8 +48,6 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     private PreferenceScreen mSettingFaq;
     private PreferenceScreen mSettingFeedback;
     private PreferenceScreen mSettingAbout;
-
-    private boolean isPgyRegister;
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -82,8 +80,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences_fragment);
         initPreferences();
     }
@@ -175,8 +172,8 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     private long getCacheSize() {
         try {
-            return getFolderSize(getActivity().getCacheDir()) +
-                    getFolderSize(getActivity().getExternalCacheDir());
+            return getFolderSize(getContext().getCacheDir()) +
+                    getFolderSize(getContext().getExternalCacheDir());
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -218,8 +215,8 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     private void clearCache() {
         //清除数据缓存
-        cleanCacheFolder(getActivity().getCacheDir(), System.currentTimeMillis());
-        cleanCacheFolder(getActivity().getExternalCacheDir(), System.currentTimeMillis());
+        cleanCacheFolder(getContext().getCacheDir(), System.currentTimeMillis());
+        cleanCacheFolder(getContext().getExternalCacheDir(), System.currentTimeMillis());
     }
 
     private int cleanCacheFolder(File dir, long curTime) {
@@ -244,14 +241,14 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     }
 
     private void checkForUpdate() {
-        Toast.makeText(getActivity(), getString(R.string.checking_for_update), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.checking_for_update), Toast.LENGTH_SHORT).show();
 
         PgyUpdateManager.register(getActivity(), "io.github.mcxinyu.housi.pgy",
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
                         mSettingCheckForUpdate.setSummary("当前为最新版本：" +
-                                CheckUpdateHelper.getCurrentVersionName(getActivity()));
+                                CheckUpdateHelper.getCurrentVersionName(getContext()));
                     }
 
                     @Override
@@ -260,16 +257,16 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                         final AppBean appBean = getAppBeanFromString(result);
 
                         if (Integer.parseInt(appBean.getVersionCode()) >
-                                CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
-                            Toast.makeText(getActivity(), getString(R.string.has_new_version), Toast.LENGTH_SHORT).show();
+                                CheckUpdateHelper.getCurrentVersionCode(getContext())) {
+                            Toast.makeText(getContext(), getString(R.string.has_new_version), Toast.LENGTH_SHORT).show();
                             mSettingCheckForUpdate.setSummary("最新版本：" +
                                     appBean.getVersionName() + "（当前版本：" +
-                                    CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
+                                    CheckUpdateHelper.getCurrentVersionName(getContext()) + "）");
 
                             // if (appBean.getVersionName().contains("force")) {
-                            //     CheckUpdateHelper.buildForceUpdateDialog(getActivity(), appBean);
+                            //     CheckUpdateHelper.buildForceUpdateDialog(getContext(), appBean);
                             // } else {
-                            //     CheckUpdateHelper.buildUpdateDialog(getActivity(), appBean);
+                            //     CheckUpdateHelper.buildUpdateDialog(getContext(), appBean);
                             // }
 
                             new AlertDialog.Builder(getActivity())
@@ -294,22 +291,14 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                         }
                     }
                 });
-        isPgyRegister = true;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (isPgyRegister)
-            PgyUpdateManager.unregister();
     }
 
     private void copyUrlToClipboard(Preference preference) {
-        ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboardManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newRawUri(preference.getSummary(),
                 Uri.parse(preference.getSummary().toString()));
         clipboardManager.setPrimaryClip(clipData);
-        Toast.makeText(getActivity(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
     }
 
     private void startAboutActivity() {
@@ -322,7 +311,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                 .withAboutAppName(getString(R.string.app_name))
                 .withActivityTitle(getString(R.string.about_title))
                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                .start(getActivity());
+                .start(getContext());
     }
 
     private void showFaqTab() {
@@ -331,7 +320,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
         CustomTabsIntent intent = builder.build();
-        intent.launchUrl(getActivity(), Uri.parse(faqUrl));
+        intent.launchUrl(getContext(), Uri.parse(faqUrl));
     }
 
     @Override

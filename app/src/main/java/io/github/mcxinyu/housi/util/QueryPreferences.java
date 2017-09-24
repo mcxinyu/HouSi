@@ -44,6 +44,13 @@ public class QueryPreferences {
                 .getString(SOURCE_BUILT_IN_DOWNLOAD_URL, null);
     }
 
+    public static void setSourceBuiltInDownloadUrl(Context context, String value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(SOURCE_BUILT_IN_DOWNLOAD_URL, value)
+                .apply();
+    }
+
     public static String getSourceDiyDownloadUrl(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SOURCE_DIY_DOWNLOAD_URL, null);

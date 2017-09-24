@@ -15,7 +15,7 @@
         android:title="@string/source_built_in_name"
         tools:summary="@string/source_built_in_name_hint"/>
     <PreferenceCategory android:title="@string/source_detail">
-        <io.github.mcxinyu.housi.util.ValidatedEditTextPreference
+        <PreferenceScreen
             android:dialogTitle="@string/source_download_url"
             android:key="source_built_in_download_url"
             android:selectable="false"

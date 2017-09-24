@@ -5,18 +5,16 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.support.annotation.Nullable;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
 import io.github.mcxinyu.housi.bean.SourceConfig;
 import io.github.mcxinyu.housi.util.QueryPreferences;
-import io.github.mcxinyu.housi.util.ValidatedEditTextPreference;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -25,12 +23,12 @@ import rx.schedulers.Schedulers;
  * Created by huangyuefeng on 2017/9/17.
  * Contact me : mcxinyu@gmail.com
  */
-public class SourceBuiltInFragment extends PreferenceFragment {
+public class SourceBuiltInFragment extends PreferenceFragmentCompat {
     private SourceConfig mSourceConfig;
 
     PreferenceScreen mSourceBuiltInUpdate;
     ListPreference mSourceBuiltInList;
-    ValidatedEditTextPreference mSourceBuiltInDownloadUrl;
+    PreferenceScreen mSourceBuiltInDownloadUrl;
     PreferenceScreen mSourceBuiltInDate;
 
     public static SourceBuiltInFragment newInstance() {
@@ -43,8 +41,7 @@ public class SourceBuiltInFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.source_built_in_fragment);
         initPreferences();
     }
@@ -52,7 +49,7 @@ public class SourceBuiltInFragment extends PreferenceFragment {
     private void initPreferences() {
         mSourceBuiltInUpdate = (PreferenceScreen) findPreference("source_built_in_update");
         mSourceBuiltInList = (ListPreference) findPreference("source_built_in_item");
-        mSourceBuiltInDownloadUrl = (ValidatedEditTextPreference) findPreference("source_built_in_download_url");
+        mSourceBuiltInDownloadUrl = (PreferenceScreen) findPreference("source_built_in_download_url");
         mSourceBuiltInDate = (PreferenceScreen) findPreference("source_built_in_date");
 
         mSourceBuiltInUpdate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -107,13 +104,14 @@ public class SourceBuiltInFragment extends PreferenceFragment {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
                 mSourceBuiltInList.setSummary(mSourceConfig.getNameArray()[Integer.parseInt((String) o)]);
-                mSourceBuiltInDownloadUrl.setText(mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
+                QueryPreferences.setSourceBuiltInDownloadUrl(getContext(),
+                        mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
                 mSourceBuiltInDownloadUrl.setSummary(mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
                 return true;
             }
         });
 
-        mSourceBuiltInDownloadUrl.setText(mSourceConfig.getResult().get(0).getUrl());
+        QueryPreferences.setSourceBuiltInDownloadUrl(getContext(), mSourceConfig.getResult().get(0).getUrl());
         mSourceBuiltInDownloadUrl.setSummary(mSourceConfig.getResult().get(0).getUrl());
         mSourceBuiltInDownloadUrl.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

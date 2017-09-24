@@ -9,10 +9,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.support.annotation.Nullable;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import java.net.URISyntaxException;
@@ -27,7 +26,7 @@ import io.github.mcxinyu.housi.util.StaticValues;
  * Created by huangyuefeng on 2017/9/17.
  * Contact me : mcxinyu@gmail.com
  */
-public class SourceFileFragment extends PreferenceFragment {
+public class SourceFileFragment extends PreferenceFragmentCompat {
     private static final String TAG = "SourceFileFragment";
 
     private static final int SELECT_FILE_REQUEST_CODE = 1024;
@@ -71,8 +70,7 @@ public class SourceFileFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.source_file_fragment);
         initPreferences();
     }
