@@ -95,7 +95,9 @@ public class ReadFragment extends ABaseFragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                mToolbar.setSubtitle(url);
+                if (mToolbar != null && url != null) {
+                    mToolbar.setSubtitle(url);
+                }
                 mSwipeRefresh.setRefreshing(false);
                 mSwipeRefresh.setEnabled(false);
             }
