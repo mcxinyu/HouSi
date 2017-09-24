@@ -97,6 +97,7 @@ public class MainActivity extends BaseAppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar_TransparentStatusBar);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
@@ -182,6 +183,8 @@ public class MainActivity extends BaseAppCompatActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (!(currentFragment instanceof BasicFragment)) {
+            if (mBasicFragment == null)
+                mBasicFragment = BasicFragment.newInstance();
             switchFragment(mBasicFragment);
         } else {
             super.onBackPressed();
