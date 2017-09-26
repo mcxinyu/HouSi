@@ -24,8 +24,7 @@
             android:value="${com_google_android_backup_api_key}"/>
         <meta-data
             android:name="PGYER_APPID"
-            android:value="${pgyer_appid}">
-        </meta-data>
+            android:value="${pgyer_appid}"/>
 
         <activity
             android:name=".activity.MainActivity"
@@ -40,25 +39,29 @@
 
         <activity
             android:name=".activity.ReadActivity"
-            android:screenOrientation="portrait"
             android:label="@string/read_hosts"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"/>
 
-        </activity>
+        <activity
+            android:name="com.pgyersdk.activity.FeedbackActivity"/>
 
-        <activity android:name="com.pgyersdk.activity.FeedbackActivity"/>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:theme="@style/AppTheme.MaterialAboutActivity"/>
 
-        <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
+        <!--<service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>-->
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="io.github.mcxinyu.housi"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/checkupdatelibrary_uri_grant"/>
-        </provider>
+        <!--<provider-->
+        <!--android:name="android.support.v4.content.FileProvider"-->
+        <!--android:authorities="io.github.mcxinyu.housi"-->
+        <!--android:exported="false"-->
+        <!--android:grantUriPermissions="true">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--android:resource="@xml/checkupdatelibrary_uri_grant"/>-->
+        <!--</provider>-->
+
         <provider
             android:name=".util.PGYProvider"
             android:authorities="io.github.mcxinyu.housi.pgy"

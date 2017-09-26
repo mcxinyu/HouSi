@@ -15,6 +15,9 @@ public class QueryPreferences {
     private static final String SOURCE_BUILT_IN_DOWNLOAD_URL = "source_built_in_download_url";
     private static final String SOURCE_DIY_DOWNLOAD_URL = "source_diy_download_url";
 
+    private static final String SETTING_SERVICE_START_TIME = "setting_service_start_time";
+    private static final String SETTING_ALARM_REPEAT = "setting_alarm_repeat";
+
     public static boolean getDrawerOpenState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(IS_DRAWER_OPENED, false);
@@ -54,5 +57,15 @@ public class QueryPreferences {
     public static String getSourceDiyDownloadUrl(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SOURCE_DIY_DOWNLOAD_URL, null);
+    }
+
+    public static String getSettingServiceStartTime(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SETTING_SERVICE_START_TIME, null);
+    }
+
+    public static String getSettingAlarmRepeat(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SETTING_ALARM_REPEAT, null);
     }
 }

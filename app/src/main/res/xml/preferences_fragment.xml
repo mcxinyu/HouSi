@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:key="parent_screen">
     <PreferenceScreen
         android:key="setting_current_source_url"
         android:title="@string/setting_current_source_url">
     </PreferenceScreen>
+
+    <PreferenceCategory
+        android:title="@string/setting_service">
+        <SwitchPreference
+            android:key="setting_switch_service"
+            android:title="@string/open_service"/>
+        <PreferenceScreen
+            android:dependency="setting_switch_service"
+            android:key="setting_service_start_time"
+            android:summary="@string/service_start_time_hint"
+            android:title="@string/service_start_time"/>
+        <ListPreference
+            android:dependency="setting_switch_service"
+            android:key="setting_alarm_repeat"
+            android:summary="@string/setting_alarm_repeat_hint"
+            android:title="@string/setting_alarm_repeat"/>
+        <PreferenceScreen
+            android:selectable="false"
+            android:summary="@string/about_service"/>
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/setting_this_app">
@@ -24,6 +43,7 @@
     <PreferenceCategory android:title="@string/support_and_help">
         <PreferenceScreen
             android:key="setting_faq"
+            android:summary="@string/action_faq_hint"
             android:title="@string/action_faq"/>
         <PreferenceScreen
             android:key="setting_feedback"

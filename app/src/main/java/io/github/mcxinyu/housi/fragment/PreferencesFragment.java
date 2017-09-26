@@ -10,10 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.views.PgyerDialog;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import com.tbruyelle.rxpermissions.Permission;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
@@ -33,6 +35,7 @@ import java.text.DecimalFormat;
 
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
+import io.github.mcxinyu.housi.activity.AboutActivity;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -48,6 +51,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     private static final String TAG = "PreferencesFragment";
 
     private PreferenceScreen mSettingCurrentSourceUrl;
+    private ListPreference mSettingAlarmRepeat;
+    private PreferenceScreen mSettingServiceStartTime;
     private PreferenceScreen mSettingCheckForUpdate;
     private PreferenceScreen mSettingCleanCache;
     private PreferenceScreen mSettingFaq;
@@ -85,13 +90,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences_fragment);
         initPreferences();
     }
 
     private void initPreferences() {
         mSettingCurrentSourceUrl = (PreferenceScreen) findPreference("setting_current_source_url");
+        mSettingAlarmRepeat = (ListPreference) findPreference("setting_alarm_repeat");
+        mSettingServiceStartTime = (PreferenceScreen) findPreference("setting_service_start_time");
         mSettingCheckForUpdate = (PreferenceScreen) findPreference("setting_check_for_update");
         mSettingCleanCache = (PreferenceScreen) findPreference("setting_clean_cache");
         mSettingFaq = (PreferenceScreen) findPreference("setting_faq");
@@ -108,7 +115,48 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         mSettingCheckForUpdate.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
 
         initSourceUrl();
+        initServiceStartTime();
+        initAlarmRepeat();
         initCache();
+    }
+
+    private void initServiceStartTime() {
+        // TODO: 2017/9/25
+    }
+
+    private void initAlarmRepeat() {
+        mSettingAlarmRepeat.setEntries(getResources().getStringArray(R.array.setting_repeat));
+        mSettingAlarmRepeat.setEntryValues(getResources().getStringArray(R.array.setting_repeat_values));
+        String repeat = QueryPreferences.getSettingAlarmRepeat(getContext());
+        if (repeat == null) {
+            repeat = getResources().getStringArray(R.array.setting_repeat_values)[0];
+            mSettingAlarmRepeat.setValue(repeat);
+        }
+        setAlarmRepeatSummary(repeat);
+        mSettingAlarmRepeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                setAlarmRepeatSummary((String) newValue);
+                return true;
+            }
+        });
+    }
+
+    private void setAlarmRepeatSummary(String index) {
+        switch (index) {
+            case "0":
+                mSettingAlarmRepeat.setSummary(getResources().getStringArray(R.array.setting_repeat)[0]);
+                break;
+            case "1":
+                mSettingAlarmRepeat.setSummary(getResources().getStringArray(R.array.setting_repeat)[1]);
+                break;
+            case "2":
+                mSettingAlarmRepeat.setSummary(getResources().getStringArray(R.array.setting_repeat)[2]);
+                break;
+            case "3":
+                mSettingAlarmRepeat.setSummary(getResources().getStringArray(R.array.setting_repeat)[3]);
+                break;
+        }
     }
 
     public void initSourceUrl() {
@@ -372,7 +420,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat
                 showPgyerDialog();
                 return true;
             case "setting_about":
-                startAboutActivity();
+                startActivity(AboutActivity.newIntent(getContext()));
                 return true;
         }
         return false;
