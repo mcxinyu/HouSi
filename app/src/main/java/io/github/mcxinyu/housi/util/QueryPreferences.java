@@ -15,6 +15,7 @@ public class QueryPreferences {
     private static final String SOURCE_BUILT_IN_DOWNLOAD_URL = "source_built_in_download_url";
     private static final String SOURCE_DIY_DOWNLOAD_URL = "source_diy_download_url";
 
+    private static final String SETTING_SWITCH_ALARM_SERVICE = "setting_switch_alarm_service";
     private static final String SETTING_SERVICE_START_TIME = "setting_service_start_time";
     private static final String SETTING_ALARM_REPEAT = "setting_alarm_repeat";
 
@@ -59,9 +60,21 @@ public class QueryPreferences {
                 .getString(SOURCE_DIY_DOWNLOAD_URL, null);
     }
 
+    public static boolean getSettingSwitchAlarmService(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SETTING_SWITCH_ALARM_SERVICE, false);
+    }
+
     public static String getSettingServiceStartTime(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SETTING_SERVICE_START_TIME, null);
+    }
+
+    public static void setSettingServiceStartTime(Context context, String time) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(SETTING_SERVICE_START_TIME, time)
+                .apply();
     }
 
     public static String getSettingAlarmRepeat(Context context) {

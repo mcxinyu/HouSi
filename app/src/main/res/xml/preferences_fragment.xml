@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:key="parent_screen">
     <PreferenceScreen
         android:key="setting_current_source_url"
@@ -10,19 +11,21 @@
     <PreferenceCategory
         android:title="@string/setting_service">
         <SwitchPreference
-            android:key="setting_switch_service"
+            android:key="setting_switch_alarm_service"
+            android:summary="@string/setting_switch_hint"
             android:title="@string/open_service"/>
         <PreferenceScreen
-            android:dependency="setting_switch_service"
+            android:dependency="setting_switch_alarm_service"
             android:key="setting_service_start_time"
-            android:summary="@string/service_start_time_hint"
-            android:title="@string/service_start_time"/>
+            android:title="@string/service_start_time"
+            tools:summary="@string/service_start_time_hint"/>
         <ListPreference
-            android:dependency="setting_switch_service"
+            android:dependency="setting_switch_alarm_service"
             android:key="setting_alarm_repeat"
-            android:summary="@string/setting_alarm_repeat_hint"
-            android:title="@string/setting_alarm_repeat"/>
+            android:title="@string/setting_alarm_repeat"
+            tools:summary="@string/setting_alarm_repeat_hint"/>
         <PreferenceScreen
+            android:key="setting_about_service"
             android:selectable="false"
             android:summary="@string/about_service"/>
     </PreferenceCategory>
@@ -36,6 +39,7 @@
             android:key="setting_clean_cache"
             android:title="@string/setting_clean_cache"/>
         <PreferenceScreen
+            android:key="setting_about_cache"
             android:selectable="false"
             android:summary="@string/about_cache"/>
     </PreferenceCategory>
