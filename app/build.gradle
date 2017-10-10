@@ -13,7 +13,7 @@ android {
         }
     }
     compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId project.APPLICATION_ID
         minSdkVersion 16
@@ -102,14 +102,14 @@ dependencies {
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'com.pgyersdk:sdk:2.7.0'
     compile 'com.coolerfall:android-app-daemon:1.2.0'
-//    compile 'com.wdullaer:materialdatetimepicker:3.3.0'
+    //    compile 'com.wdullaer:materialdatetimepicker:3.3.0'
     //
     compile 'eu.chainfire:libsuperuser:1.0.0.201704021214'
     //
-//    compile 'com.takisoft.fix:preference-v7-extras:26.1.0.2'
+    //    compile 'com.takisoft.fix:preference-v7-extras:26.1.0.2'
     compile 'com.takisoft.fix:preference-v7:26.1.0.2'
     compile 'com.github.daniel-stoneuk:material-about-library:2.2.3-support26.1.0'
-    compile "com.mikepenz:iconics-core:2.9.0@aar"
+    compile 'com.mikepenz:iconics-core:2.9.0@aar'
     compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
     compile 'com.mikepenz:community-material-typeface:1.7.22.1@aar'
     compile('com.mikepenz:aboutlibraries:5.9.7@aar') {
