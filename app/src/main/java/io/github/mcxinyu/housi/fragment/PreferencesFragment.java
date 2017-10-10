@@ -194,6 +194,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         if (startTime != null) {
             calendar.setTimeInMillis(Long.parseLong(startTime));
         }
+        QueryPreferences.setSettingServiceStartTime(getContext(), calendar.getTimeInMillis() + "");
         mSettingServiceStartTime.setSummary(SERVICE_START_TIME_FORMAT.format(calendar.getTime()));
     }
 
