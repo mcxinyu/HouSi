@@ -27,7 +27,7 @@
         <PreferenceScreen
             android:key="setting_about_service"
             android:selectable="false"
-            android:summary="@string/about_service"/>
+            android:summary="@string/about_service_alarm_manager"/>
     </PreferenceCategory>
 
     <PreferenceCategory

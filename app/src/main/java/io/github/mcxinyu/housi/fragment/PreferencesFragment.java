@@ -21,6 +21,9 @@ import android.support.v7.preference.PreferenceScreen;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.aboutlibraries.util.Colors;
@@ -70,6 +73,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     private PreferenceScreen mSettingFeedback;
     private PreferenceScreen mSettingAbout;
     private PreferenceScreen mSettingAboutCache;
+
+    private boolean isUseFirebaseCloudMessage;
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -161,6 +166,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     }
 
     private void initSwitchAlarmService() {
+        initAlarmUI();
+
         if (mSettingSwitchAlarmService.isChecked()) {
             mSettingAboutService.setVisible(true);
             mSettingServiceStartTime.setVisible(true);
@@ -184,7 +191,33 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         });
 
         initServiceAlarmTime();
-        initAlarmRepeat();
+    }
+
+    private void initAlarmUI() {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int statusCode = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
+        if (statusCode != ConnectionResult.SUCCESS) {
+            if (statusCode == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+                Toast.makeText(getContext(), "请升级 Google Play 服务。", Toast.LENGTH_SHORT).show();
+            } else if (statusCode == ConnectionResult.SIGN_IN_REQUIRED) {
+                Toast.makeText(getContext(), "请登录 Google Play 服务。", Toast.LENGTH_SHORT).show();
+            } else if (googleApiAvailability.isUserResolvableError(statusCode)) {
+                googleApiAvailability.getErrorDialog(getActivity(), statusCode, 2048,
+                        new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                Toast.makeText(getContext(), "isUserResolvableError", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+            }
+
+            isUseFirebaseCloudMessage = false;
+            mSettingAboutService.setSummary(R.string.about_service_alarm_manager);
+        } else {
+            isUseFirebaseCloudMessage = true;
+            mSettingAboutService.setSummary(R.string.about_service_google_play);
+        }
+        QueryPreferences.setUseFirebaseCloudMessage(getContext(), isUseFirebaseCloudMessage);
     }
 
     private void initServiceAlarmTime() {
@@ -196,6 +229,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         }
         QueryPreferences.setSettingServiceStartTime(getContext(), calendar.getTimeInMillis() + "");
         mSettingServiceStartTime.setSummary(SERVICE_START_TIME_FORMAT.format(calendar.getTime()));
+
+        initAlarmRepeat();
     }
 
     private void initAlarmRepeat() {
@@ -230,6 +265,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat
             case "3":
                 mSettingAlarmRepeat.setSummary(getResources().getStringArray(R.array.setting_repeat)[3]);
                 break;
+        }
+    }
+
+    public void setAlarm() {
+        if (isUseFirebaseCloudMessage) {
+            FirebaseMessaging.getInstance().subscribeToTopic("setAlarm");
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("setAlarm");
+            getContext().startService(AlarmService.newIntent(getContext(), false));
         }
     }
 
@@ -481,10 +525,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat
                 true);
         timePickerDialog.setTitle("设置时间");
         timePickerDialog.show();
-    }
-
-    public void setAlarm() {
-        getContext().startService(AlarmService.newIntent(getContext(), false));
     }
 
     @Override
