@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.fabric'
 
 def gitCommit = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 
@@ -30,6 +31,7 @@ android {
         buildConfigField "String", "FAQ_URL", project.faq_url
         buildConfigField "String", "MY_GITHUB_URL", project.my_github_url
         manifestPlaceholders = [com_google_android_backup_api_key: project.com_google_android_backup_api_key,
+                                fabric_api_key                   : project.fabric_api_key,
                                 pgyer_appid                      : project.pgyer_appid]
     }
     buildTypes {
@@ -116,6 +118,9 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.0.4'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.google.android.gms:play-services:11.0.4'
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true;
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -25,6 +25,9 @@
         <meta-data
             android:name="PGYER_APPID"
             android:value="${pgyer_appid}"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabric_api_key}"/>
 
         <activity
             android:name=".activity.MainActivity"

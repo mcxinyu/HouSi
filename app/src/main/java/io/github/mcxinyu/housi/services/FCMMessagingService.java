@@ -16,13 +16,12 @@ import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.activity.MainActivity;
 import io.github.mcxinyu.housi.util.LogUtils;
 
-import static com.mikepenz.iconics.Iconics.TAG;
-
 /**
  * Created by huangyuefeng on 2017/10/16.
  * Contact me : mcxinyu@gmail.com
  */
 public class FCMMessagingService extends FirebaseMessagingService {
+    private static final String TAG = "FCMMessagingService";
     private static final int REQUEST_CODE_NOTIFICATION = 2048;
     private static final int NOTIFICATION_ID = 2049;
 
@@ -30,6 +29,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        LogUtils.d(TAG, "remoteMessage from : " + remoteMessage.getFrom());
         doNotify();
     }
 
