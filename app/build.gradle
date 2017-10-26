@@ -61,13 +61,9 @@ android {
     }
     android.applicationVariants.all { variant ->
         if (variant.buildType.name.equals('release')) {
-            variant.outputs.each { output ->
-                def outputFile = output.outputFile
-                if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                    def fileName = "${defaultConfig.applicationId}_v${defaultConfig.versionName}" +
-                            "_${gitCommit}_${variant.buildType.name}.apk"
-                    output.outputFile = new File(outputFile.parent, fileName)
-                }
+            variant.outputs.all { output ->
+                outputFileName = "${defaultConfig.applicationId}_v${defaultConfig.versionName}" +
+                        "_${gitCommit}_${variant.buildType.name}.apk"
             }
         }
     }
