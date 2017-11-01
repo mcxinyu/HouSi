@@ -85,4 +85,5 @@
     <string name="about_app">关于本应用</string>
     <string name="action_faq_hint">请仔细阅读说明书</string>
     <string name="setting_switch_hint">按时提醒你更新 hosts</string>
+    <string name="account_name">anonymous</string>
 </resources>
