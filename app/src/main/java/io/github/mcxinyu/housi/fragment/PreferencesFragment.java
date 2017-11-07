@@ -10,14 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.v14.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -29,7 +23,6 @@ import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.views.PgyerDialog;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import com.tbruyelle.rxpermissions.Permission;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
@@ -37,6 +30,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
@@ -46,20 +40,25 @@ import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
 import io.github.mcxinyu.housi.util.StateUtils;
+import moe.shizuku.preference.ListPreference;
+import moe.shizuku.preference.Preference;
+import moe.shizuku.preference.PreferenceFragment;
+import moe.shizuku.preference.PreferenceScreen;
+import moe.shizuku.preference.SwitchPreference;
 import rx.functions.Action1;
 
 /**
  * Created by huangyuefeng on 2017/9/21.
  * Contact me : mcxinyu@gmail.com
  */
-public class PreferencesFragment extends PreferenceFragmentCompat
+public class PreferencesFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
     private static final String TAG = "PreferencesFragment";
 
     private static final SimpleDateFormat SERVICE_START_TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final int REQUEST_CODE_ALARM = 1024;
 
-    private PreferenceScreen mSettingCurrentSourceUrl;
+    private ListPreference mSettingCurrentSourceUrlMulti;
     private SwitchPreference mSettingSwitchAlarmService;
     private PreferenceScreen mSettingServiceStartTime;
     private ListPreference mSettingAlarmRepeat;
@@ -102,13 +101,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences_fragment);
         initPreferences();
     }
 
     private void initPreferences() {
-        mSettingCurrentSourceUrl = (PreferenceScreen) findPreference("setting_current_source_url");
+        mSettingCurrentSourceUrlMulti = (ListPreference) findPreference("setting_current_source_url_multi");
         mSettingSwitchAlarmService = (SwitchPreference) findPreference("setting_switch_alarm_service");
         mSettingServiceStartTime = (PreferenceScreen) findPreference("setting_service_start_time");
         mSettingAlarmRepeat = (ListPreference) findPreference("setting_alarm_repeat");
@@ -120,13 +119,26 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         mSettingAbout = (PreferenceScreen) findPreference("setting_about");
         mSettingAboutCache = (PreferenceScreen) findPreference("setting_about_cache");
 
-        mSettingCurrentSourceUrl.setOnPreferenceClickListener(this);
+        mSettingCurrentSourceUrlMulti.setOnPreferenceClickListener(this);
         mSettingServiceStartTime.setOnPreferenceClickListener(this);
         mSettingCheckForUpdate.setOnPreferenceClickListener(this);
         mSettingCleanCache.setOnPreferenceClickListener(this);
         mSettingFaq.setOnPreferenceClickListener(this);
         mSettingFeedback.setOnPreferenceClickListener(this);
         mSettingAbout.setOnPreferenceClickListener(this);
+
+        mSettingCurrentSourceUrlMulti.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String[] urlEntries = (String[]) ((ListPreference) preference).getEntries();
+
+                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newRawUri("url", Uri.parse(urlEntries[Integer.parseInt((String) newValue)]));
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(getActivity(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
         initSourceUrl();
         initSwitchAlarmService();
@@ -135,29 +147,54 @@ public class PreferencesFragment extends PreferenceFragmentCompat
     }
 
     public void initSourceUrl() {
-        mSettingCurrentSourceUrl.setSummary(getCurrentDownloadUrl());
-    }
-
-    @NonNull
-    private String getCurrentDownloadUrl() {
-        String hostsUrl = null;
         int routing = QueryPreferences.getSourceRouting(getActivity());
         switch (routing) {
             case 0:
-                hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                initBuiltInDownloadUrlMulti();
                 break;
             case 1:
-                hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
-                if (hostsUrl == null) {
-                    hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
-                }
+                initDiyDownloadUrl();
                 break;
         }
+    }
 
-        if (hostsUrl == null) {
-            hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
+    private void initBuiltInDownloadUrlMulti() {
+        Set<String> downloadUrlSet = QueryPreferences.getSourceBuiltInMultiDownloadUrl(getActivity());
+        if (downloadUrlSet == null) {
+            String[] urlEntries = {getDefaultDownloadUrl()};
+            mSettingCurrentSourceUrlMulti.setEntryValues(new String[]{"0"});
+            mSettingCurrentSourceUrlMulti.setEntries(urlEntries);
+            mSettingCurrentSourceUrlMulti.setSummary(
+                    String.format(getString(R.string.current_has_multi_sources), urlEntries.length));
+        } else {
+            String[] urlEntries = new String[downloadUrlSet.size()];
+            downloadUrlSet.toArray(urlEntries);
+            String[] values = new String[downloadUrlSet.size()];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = "" + i;
+            }
+            mSettingCurrentSourceUrlMulti.setEntryValues(values);
+            mSettingCurrentSourceUrlMulti.setEntries(urlEntries);
+            mSettingCurrentSourceUrlMulti.setSummary(
+                    String.format(getString(R.string.current_has_multi_sources), urlEntries.length));
         }
-        return hostsUrl;
+    }
+
+    private void initDiyDownloadUrl() {
+        String hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
+        if (hostsUrl == null) {
+            hostsUrl = getDefaultDownloadUrl();
+        }
+        String[] urlEntries = {hostsUrl};
+
+        mSettingCurrentSourceUrlMulti.setEntryValues(new String[]{"0"});
+        mSettingCurrentSourceUrlMulti.setEntries(urlEntries);
+        mSettingCurrentSourceUrlMulti.setSummary(
+                String.format(getString(R.string.current_diy_sources), urlEntries.length));
+    }
+
+    private String getDefaultDownloadUrl() {
+        return BuildConfig.DEFAULT_HOSTS_URL;
     }
 
     private void initSwitchAlarmService() {

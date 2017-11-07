@@ -1,25 +1,23 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.widget.Toast;
-
-import com.takisoft.fix.support.v7.preference.EditTextPreference;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.util.QueryPreferences;
+import moe.shizuku.preference.EditTextPreference;
+import moe.shizuku.preference.Preference;
+import moe.shizuku.preference.PreferenceFragment;
 
 /**
  * Created by huangyuefeng on 2017/9/17.
  * Contact me : mcxinyu@gmail.com
  */
-public class SourceDiyFragment extends PreferenceFragmentCompat {
+public class SourceDiyFragment extends PreferenceFragment {
     private EditTextPreference mSourceDiyDownloadUrl;
 
     public static SourceDiyFragment newInstance() {
@@ -32,7 +30,7 @@ public class SourceDiyFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.source_diy_fragment);
         initPreference();
     }
@@ -42,7 +40,7 @@ public class SourceDiyFragment extends PreferenceFragmentCompat {
         mSourceDiyDownloadUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                if (!TextUtils.isEmpty(mSourceDiyDownloadUrl.getEditText().getText())) {
+                if (!TextUtils.isEmpty((String) o)) {
                     URL address;
                     try {
                         address = new URL((String) o);
@@ -51,8 +49,11 @@ public class SourceDiyFragment extends PreferenceFragmentCompat {
                         e.printStackTrace();
                         return false;
                     }
+                    mSourceDiyDownloadUrl.setSummary(address.toString());
                     QueryPreferences.setSourceRouting(getContext(), 1);
-                    preference.setSummary(address.toString());
+                } else {
+                    mSourceDiyDownloadUrl.setSummary(getString(R.string.source_diy_download_url_hint));
+                    QueryPreferences.setSourceRouting(getContext(), 0);
                 }
                 return true;
             }

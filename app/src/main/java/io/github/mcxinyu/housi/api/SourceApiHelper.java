@@ -3,9 +3,14 @@ package io.github.mcxinyu.housi.api;
 import android.content.Context;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.List;
+import java.util.Set;
 
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.bean.SourceConfig;
@@ -26,7 +31,7 @@ public class SourceApiHelper {
         return SOURCE_API.getSourceConfig(BuildConfig.SOURCE_KEY);
     }
 
-    public static Observable<File> getSourceHosts(final Context context, String source) {
+    public static Observable<File> getSourceHosts(final Context context, final String source) {
         return SOURCE_API.getSourceHosts(source)
                 .map(new Func1<ResponseBody, File>() {
                     @Override
@@ -41,7 +46,7 @@ public class SourceApiHelper {
                         FileOutputStream fos = null;
 
                         File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
-                                File.separator + StaticValues.HOSTS_FILE_NAME);
+                                File.separator + source + StaticValues.HOSTS_FILE_NAME);
                         try {
                             is = responseBody.byteStream();
                             fos = new FileOutputStream(sourceHostFile);
@@ -66,5 +71,51 @@ public class SourceApiHelper {
                         return sourceHostFile;
                     }
                 });
+    }
+
+    public static Observable<File> getMultiSourceHosts(final Context context, final Set<String> sources) {
+        return Observable.from(sources)
+                .flatMap(new Func1<String, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(String s) {
+                        return getSourceHosts(context, s);
+                    }
+                })
+                .toList()
+                .flatMap(new Func1<List<File>, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(List<File> files) {
+                        final File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
+                                File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME);
+                        return Observable.just(mergeFiles(sourceHostFile, files));
+                    }
+                });
+    }
+
+    private static File mergeFiles(File outFile, List<File> files) {
+        FileChannel outChannel = null;
+        try {
+            outChannel = new FileOutputStream(outFile).getChannel();
+            for (File file : files) {
+                FileChannel fc = new FileInputStream(file).getChannel();
+                ByteBuffer bb = ByteBuffer.allocate(1024);
+                while (fc.read(bb) != -1) {
+                    bb.flip();
+                    outChannel.write(bb);
+                    bb.clear();
+                }
+                fc.close();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (outChannel != null) {
+                    outChannel.close();
+                }
+            } catch (IOException ignore) {
+            }
+        }
+        return outFile;
     }
 }

@@ -7,14 +7,14 @@
     <string name="action_basic">基本</string>
     <string name="action_source">来源</string>
     <string name="action_settings">设置</string>
-    <string name="action_feedback">反馈</string>
+    <string name="action_feedback">打小报告</string>
     <string name="action_group_communicate">沟通</string>
     <string name="app_description">欢迎光临</string>
     <string name="update_hosts">更新 hosts</string>
     <string name="reset_hosts">重置 hosts</string>
     <string name="read_hosts">查看 hosts</string>
     <string name="no_root">此设备没有 root，本程序无法正常工作。</string>
-    <string name="no_su">没有获得 root 权限，本程序无法正常工作。</string>
+    <string name="no_su">没有获得 root 权限，该功能无法正常工作。</string>
     <string name="action_cancel">取消操作</string>
     <string name="do_on_update_hosts">获取 hosts 文件中…</string>
     <string name="update_hosts_failure">更新 hosts 失败</string>
@@ -44,6 +44,7 @@
     <string name="source_built_in_update_refresh_failure">获取列表失败，请重试。</string>
     <string name="source_built_in_update_refresh_please">请先刷新列表</string>
     <string name="source_built_in_note">右上角切换来源会改变“基本”页的来源获取方式。\n点击下载地址可以复制 url 地址。\n选定来源后，返回“基本”页进行更新。</string>
+    <string name="source_built_in_multi_note">点选便可以复制 url 地址。</string>
     <string name="clipboard_hint">已复制到剪切板</string>
     <string name="source_diy_note">右上角切换来源会改变“基本”页的来源获取方式。\n自定义来源地址后，返回“基本”页进行更新。</string>
     <string name="source_diy_download_url_hint">点击设置自定义来源地址</string>
@@ -85,4 +86,8 @@
     <string name="about_app">关于本应用</string>
     <string name="action_faq_hint">请仔细阅读说明书</string>
     <string name="setting_switch_hint">按时提醒你更新 hosts</string>
+    <string name="selected_sources">已选择 %1$d 条 hosts 源</string>
+    <string name="current_has_multi_sources">已设置合并 %1$d 条 hosts 源，点击查看</string>
+    <string name="current_diy_sources">已自定义了 %1$d 条 hosts 源，点击查看</string>
+    <string name="checking_for_su">检查 root 权限</string>
 </resources>
