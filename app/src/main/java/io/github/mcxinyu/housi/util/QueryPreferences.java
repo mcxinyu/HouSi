@@ -103,6 +103,7 @@ public class QueryPreferences {
 
     /**
      * 后去通知功能总开关状态
+     *
      * @param context
      * @return
      */
