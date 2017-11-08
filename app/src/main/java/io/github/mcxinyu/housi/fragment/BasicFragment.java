@@ -21,7 +21,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,7 +113,7 @@ public class BasicFragment extends ABaseFragment {
         mUpdateHostsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateHosts();
+                new CheckSu().execute();
             }
         });
 
@@ -188,18 +190,19 @@ public class BasicFragment extends ABaseFragment {
         // Snackbar.make(mParentView, getString(R.string.has_nothing), Snackbar.LENGTH_SHORT).show();
     }
 
-    @SuppressWarnings("deprecation")
     private void updateHosts() {
-        String hostsUrl = null;
+        Set<String> hostsUrlSet = new HashSet<>();
         int routing = QueryPreferences.getSourceRouting(getActivity());
         switch (routing) {
             case 0:
-                hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                hostsUrlSet = QueryPreferences.getSourceBuiltInMultiDownloadUrl(getActivity());
                 break;
             case 1:
-                hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
-                if (hostsUrl == null) {
-                    hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                String hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
+                if (hostsUrl != null) {
+                    hostsUrlSet.add(hostsUrl);
+                } else {
+                    hostsUrlSet = QueryPreferences.getSourceBuiltInMultiDownloadUrl(getActivity());
                 }
                 break;
         }
@@ -210,11 +213,13 @@ public class BasicFragment extends ABaseFragment {
         dialog.setCancelable(false);
         dialog.show();
 
-        if (hostsUrl == null) {
-            hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
+        if (hostsUrlSet == null) {
+            hostsUrlSet = new HashSet<>();
+            String hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
+            hostsUrlSet.add(hostsUrl);
         }
 
-        SourceApiHelper.getSourceHosts(getActivity(), hostsUrl)
+        SourceApiHelper.getMultiSourceHosts(getActivity(), hostsUrlSet)
                 .map(new Func1<File, Integer>() {
                     @Override
                     public Integer call(File file) {
@@ -260,7 +265,6 @@ public class BasicFragment extends ABaseFragment {
                             case -2:
                             case -1:
                                 Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
-                                // mCallbacks.hasRoot(false);
                                 break;
                             case 0:
                                 Snackbar.make(mParentView, getString(R.string.update_hosts_success), Snackbar.LENGTH_SHORT).show();
@@ -273,11 +277,43 @@ public class BasicFragment extends ABaseFragment {
                 });
     }
 
+    class CheckSu extends AsyncTask<Void, Void, Void> {
+        ProgressDialog dialog = null;
+        boolean suAvailable = false;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage(getString(R.string.checking_for_su));
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            suAvailable = Shell.SU.available();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
+
+            if (!suAvailable) {
+                Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
+            } else {
+                updateHosts();
+            }
+        }
+    }
+
     private void resetHosts() {
         new ResetHosts().execute();
     }
 
-    @SuppressWarnings("deprecation")
     class ResetHosts extends AsyncTask<Void, Void, Void> {
         ProgressDialog dialog = null;
         boolean suAvailable = false;

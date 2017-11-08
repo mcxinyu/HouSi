@@ -8,20 +8,20 @@
         android:summary="@string/source_built_in_update_refresh_please"
         android:title="@string/source_built_in_update">
     </PreferenceScreen>
-    <ListPreference
+    <MultiSelectListPreference
         android:dialogTitle="@string/source_built_in_name"
-        android:key="source_built_in_item"
+        android:key="source_built_in_item_multi"
         android:selectable="false"
         android:title="@string/source_built_in_name"
         tools:summary="@string/source_built_in_name_hint"/>
     <PreferenceCategory android:title="@string/source_detail">
-        <PreferenceScreen
+        <SimpleMenuPreference
             android:dialogTitle="@string/source_download_url"
-            android:key="source_built_in_download_url"
+            android:key="source_built_in_download_url_multi"
             android:selectable="false"
             android:textIsSelectable="true"
             android:title="@string/source_download_url"
-            tools:summary="@string/source_built_in_download_url_hint"/>
+            android:summary="@string/source_built_in_multi_note"/>
         <PreferenceScreen
             android:key="source_built_in_date"
             android:selectable="false"
