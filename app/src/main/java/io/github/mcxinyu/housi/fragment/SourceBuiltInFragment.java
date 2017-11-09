@@ -110,6 +110,7 @@ public class SourceBuiltInFragment extends PreferenceFragment {
         mSourceBuiltInMultiList.setValues(valuesSet);
         mSourceBuiltInMultiList.setSummary(mSourceConfig.getNameArray()[0]);
         mSourceBuiltInMultiList.setSelectable(true);
+        mSourceBuiltInMultiList.setEnabled(true);
         mSourceBuiltInMultiList.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
@@ -159,5 +160,6 @@ public class SourceBuiltInFragment extends PreferenceFragment {
             }
         });
         mSourceBuiltInMultiDownloadUrl.setSelectable(true);
+        mSourceBuiltInMultiDownloadUrl.setEnabled(true);
     }
 }
