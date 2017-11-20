@@ -92,4 +92,5 @@
     <string name="checking_for_su">检查 root 权限</string>
     <string name="account_name">anonymous</string>
     <string name="please_grant_permission">请授予相应权限</string>
+    <string name="doing_debug">进入调试状态</string>
 </resources>

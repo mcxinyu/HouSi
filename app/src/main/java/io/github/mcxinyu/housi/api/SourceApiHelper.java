@@ -48,6 +48,10 @@ public class SourceApiHelper {
 
                         File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
                                 File.separator + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
+                        if (BuildConfig.DEBUG) {
+                            sourceHostFile = new File(context.getExternalCacheDir().getAbsolutePath() +
+                                    File.separator + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
+                        }
                         try {
                             is = responseBody.byteStream();
                             fos = new FileOutputStream(sourceHostFile);
@@ -86,8 +90,12 @@ public class SourceApiHelper {
                 .flatMap(new Func1<List<File>, Observable<File>>() {
                     @Override
                     public Observable<File> call(List<File> files) {
-                        final File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
+                        File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
                                 File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
+                        if (BuildConfig.DEBUG) {
+                            sourceHostFile = new File(context.getExternalCacheDir().getAbsolutePath() +
+                                    File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
+                        }
                         return Observable.just(mergeFiles(sourceHostFile, files));
                     }
                 });

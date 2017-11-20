@@ -125,8 +125,8 @@ public class SourceBuiltInFragment extends PreferenceFragment {
                 }
                 String[] urlEntries = new String[select.length];
                 for (int i = 0; i < select.length; i++) {
-                    select[i] = "" + i;
                     urlEntries[i] = mSourceConfig.getUrlArray()[Integer.parseInt(select[i])];
+                    select[i] = "" + i;
                 }
                 QueryPreferences.setSourceBuiltInMultiDownloadUrl(getContext(),
                         new HashSet<>(Arrays.asList(urlEntries)));
