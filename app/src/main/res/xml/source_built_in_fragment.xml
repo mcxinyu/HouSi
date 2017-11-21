@@ -15,23 +15,17 @@
         android:selectable="false"
         android:title="@string/source_built_in_name"
         tools:summary="@string/source_built_in_name_hint"/>
-    <PreferenceCategory android:title="@string/source_detail">
-        <SimpleMenuPreference
-            android:dialogTitle="@string/source_download_url"
-            android:enabled="false"
-            android:key="source_built_in_download_url_multi"
-            android:selectable="false"
-            android:summary="@string/source_built_in_multi_note"
-            android:textIsSelectable="true"
-            android:title="@string/source_download_url"/>
+    <PreferenceCategory
+        android:key="source_built_in_dynamic_state_screen"
+        android:title="@string/source_detail">
         <PreferenceScreen
             android:enabled="false"
             android:key="source_built_in_date"
             android:selectable="false"
             android:summary="@string/source_built_in_date_hint"
             android:title="@string/source_built_in_date"/>
-        <PreferenceScreen
-            android:selectable="false"
-            android:summary="@string/source_built_in_note"/>
     </PreferenceCategory>
+    <PreferenceScreen
+        android:selectable="false"
+        android:summary="@string/source_built_in_note"/>
 </PreferenceScreen>

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.github.mcxinyu.housi.BuildConfig;
+import io.github.mcxinyu.housi.bean.GitRepos;
 import io.github.mcxinyu.housi.bean.SourceConfig;
 import io.github.mcxinyu.housi.util.StaticValues;
 import okhttp3.ResponseBody;
@@ -97,6 +98,19 @@ public class SourceApiHelper {
                                     File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
                         }
                         return Observable.just(mergeFiles(sourceHostFile, files));
+                    }
+                });
+    }
+
+    public static Observable<String> getSourceUpdateDate(String repos) {
+        return SOURCE_API.getSourceUpdateDate(repos)
+                .map(new Func1<List<GitRepos>, String>() {
+                    @Override
+                    public String call(List<GitRepos> gitRepos) {
+                        if (gitRepos == null || gitRepos.size() == 0) {
+                            return "n/a";
+                        }
+                        return gitRepos.get(0).getCommit().getCommitter().getDate();
                     }
                 });
     }
