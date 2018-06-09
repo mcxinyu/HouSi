@@ -1,6 +1,7 @@
 package io.github.mcxinyu.housi.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class MainActivity extends BaseAppCompatActivity
     DrawerLayout mDrawerLayout;
     private Unbinder unbinder;
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -169,8 +171,8 @@ public class MainActivity extends BaseAppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
         currentFragment = null;
+        unbinder.unbind();
     }
 
     @Override
@@ -242,54 +244,56 @@ public class MainActivity extends BaseAppCompatActivity
 
                         if (Integer.parseInt(appBean.getVersionCode()) >
                                 CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)) {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("更新")
-                                    .setMessage(appBean.getReleaseNote())
-                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            if (!isFinishing()) {
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle("更新")
+                                        .setMessage(appBean.getReleaseNote())
+                                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .setPositiveButton("下载", new DialogInterface.OnClickListener() {
 
-                                        @Override
-                                        public void onClick(final DialogInterface dialog, int which) {
-                                            RxPermissions rxPermissions = new RxPermissions(MainActivity.this);
-                                            rxPermissions.requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                                    .subscribe(new Action1<Permission>() {
-                                                        @Override
-                                                        public void call(Permission permission) {
-                                                            if (permission.granted) {
-                                                                if (permission.name.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                                                    if (!StateUtils.isNetworkAvailable(MainActivity.this)) {
-                                                                        Toast.makeText(MainActivity.this,
-                                                                                getString(R.string.network_is_not_available),
-                                                                                Toast.LENGTH_SHORT).show();
-                                                                    } else {
-                                                                        startDownloadTask(MainActivity.this,
-                                                                                appBean.getDownloadURL());
+                                            @Override
+                                            public void onClick(final DialogInterface dialog, int which) {
+                                                RxPermissions rxPermissions = new RxPermissions(MainActivity.this);
+                                                rxPermissions.requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                        .subscribe(new Action1<Permission>() {
+                                                            @Override
+                                                            public void call(Permission permission) {
+                                                                if (permission.granted) {
+                                                                    if (permission.name.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                                                        if (!StateUtils.isNetworkAvailable(MainActivity.this)) {
+                                                                            Toast.makeText(MainActivity.this,
+                                                                                    getString(R.string.network_is_not_available),
+                                                                                    Toast.LENGTH_SHORT).show();
+                                                                        } else {
+                                                                            startDownloadTask(MainActivity.this,
+                                                                                    appBean.getDownloadURL());
+                                                                        }
                                                                     }
+                                                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                                                    // 用户拒绝了权限申请
+                                                                    Toast.makeText(MainActivity.this,
+                                                                            getString(R.string.need_storage),
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    // 用户拒绝，并且选择不再提示
+                                                                    // 可以引导用户进入权限设置界面开启权限
+                                                                    Toast.makeText(MainActivity.this,
+                                                                            getString(R.string.need_storage),
+                                                                            Toast.LENGTH_SHORT).show();
                                                                 }
-                                                            } else if (permission.shouldShowRequestPermissionRationale) {
-                                                                // 用户拒绝了权限申请
-                                                                Toast.makeText(MainActivity.this,
-                                                                        getString(R.string.need_storage),
-                                                                        Toast.LENGTH_SHORT).show();
-                                                            } else {
-                                                                // 用户拒绝，并且选择不再提示
-                                                                // 可以引导用户进入权限设置界面开启权限
-                                                                Toast.makeText(MainActivity.this,
-                                                                        getString(R.string.need_storage),
-                                                                        Toast.LENGTH_SHORT).show();
                                                             }
-                                                        }
-                                                    });
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .show();
+                                                        });
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+                            }
                         }
                         PgyUpdateManager.unregister();
                     }
