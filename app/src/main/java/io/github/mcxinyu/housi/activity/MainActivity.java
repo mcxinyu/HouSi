@@ -171,6 +171,12 @@ public class MainActivity extends BaseAppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        try {
+            PgyUpdateManager.unregister();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.d(TAG, e.getMessage());
+        }
         currentFragment = null;
         unbinder.unbind();
     }
@@ -255,6 +261,7 @@ public class MainActivity extends BaseAppCompatActivity
                                                 dialog.dismiss();
                                             }
                                         })
+                                        .setCancelable(!appBean.getVersionName().contains("force"))
                                         .setPositiveButton("下载", new DialogInterface.OnClickListener() {
 
                                             @Override
