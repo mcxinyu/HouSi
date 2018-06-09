@@ -35,7 +35,7 @@
 #### 检查更新
 
 应用启动后会自动通过网络检查更新，如果有新版本会弹出提示更新窗口。如果提示更新窗口被忽略了（关掉了），那么可以通过设置里面的“检查更新”功能主动进行。
-也可以通过一下两种方式获取 apk 文件：
+也可以通过一下两种方式获取 apk 文件：   
     1.[后司 下载安装](https://www.pgyer.com/housi)   
     2.[github releases](https://github.com/mcxinyu/HouSi/releases)
 
