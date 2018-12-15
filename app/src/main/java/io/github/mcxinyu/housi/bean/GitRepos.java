@@ -5,6 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
+ * https://developer.github.com/v3/
+ * <p>
+ * All timestamps return in ISO 8601 format:
+ * <p>
+ * YYYY-MM-DDTHH:MM:SSZ
+ * For more information about time zones in timestamps,
+ * see this @see <a href="https://developer.github.com/v3/#timezones">section</a>.
+ * <p>
  * Created by huangyuefeng on 2017/11/20.
  * Contact me : mcxinyu@gmail.com
  */
