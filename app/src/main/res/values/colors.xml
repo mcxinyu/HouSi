@@ -9,4 +9,8 @@
     <color name="googleGreen">#009925</color>
     <color name="googleBlue">#3369e8</color>
 
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="gray">#9b9a9a</color>
+
 </resources>

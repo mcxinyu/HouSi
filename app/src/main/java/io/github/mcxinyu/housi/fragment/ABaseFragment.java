@@ -46,7 +46,7 @@ public abstract class ABaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCallbacks.setDrawerMenuClicked(getMenuItemId());
+        mCallbacks.setDrawerMenuClicked(getNavMenuItemId());
         mCallbacks.initToolbar(getToolBar());
     }
 
@@ -54,7 +54,7 @@ public abstract class ABaseFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            mCallbacks.setDrawerMenuClicked(getMenuItemId());
+            mCallbacks.setDrawerMenuClicked(getNavMenuItemId());
             mCallbacks.initToolbar(getToolBar());
         }
     }
@@ -74,5 +74,5 @@ public abstract class ABaseFragment extends Fragment {
     protected abstract Toolbar getToolBar();
 
     @IdRes
-    protected abstract int getMenuItemId();
+    protected abstract int getNavMenuItemId();
 }

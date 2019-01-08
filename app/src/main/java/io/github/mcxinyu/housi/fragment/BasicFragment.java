@@ -31,7 +31,7 @@ import butterknife.Unbinder;
 import eu.chainfire.libsuperuser.Shell;
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
-import io.github.mcxinyu.housi.activity.ReadActivity;
+import io.github.mcxinyu.housi.activity.ReadEditHostsActivity;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -176,7 +176,7 @@ public class BasicFragment extends ABaseFragment {
     }
 
     @Override
-    protected int getMenuItemId() {
+    protected int getNavMenuItemId() {
         return R.id.nav_basic;
     }
 
@@ -186,7 +186,7 @@ public class BasicFragment extends ABaseFragment {
     }
 
     private void readHosts() {
-        startActivity(ReadActivity.newIntent(getActivity()));
+        startActivity(ReadEditHostsActivity.newIntent(getActivity()));
         // Snackbar.make(mParentView, getString(R.string.has_nothing), Snackbar.LENGTH_SHORT).show();
     }
 

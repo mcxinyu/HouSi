@@ -12,21 +12,30 @@ import android.view.MenuItem;
 
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.fragment.ABaseFragment;
-import io.github.mcxinyu.housi.fragment.ReadFragment;
+import io.github.mcxinyu.housi.fragment.ReadEditHostsFragment;
 
 /**
  * Created by huangyuefeng on 2017/9/19.
  * Contact me : mcxinyu@gmail.com
  */
-public class ReadActivity extends BaseAppCompatActivity
+public class ReadEditHostsActivity extends BaseAppCompatActivity
         implements ABaseFragment.Callbacks {
 
+    public static String sHostsString;
+
+    private static final String EXTRA_EDIT = "extra_edit";
+
     private FragmentManager mFragmentManager;
+    private boolean mBooleanExtra;
 
     public static Intent newIntent(Context context) {
+        return newIntent(context, false);
+    }
 
-        Intent intent = new Intent(context, ReadActivity.class);
-        // intent.putExtra();
+    public static Intent newIntent(Context context, boolean edit) {
+
+        Intent intent = new Intent(context, ReadEditHostsActivity.class);
+        intent.putExtra(EXTRA_EDIT, edit);
         return intent;
     }
 
@@ -34,12 +43,15 @@ public class ReadActivity extends BaseAppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame_layout_container);
+        if (getIntent() != null) {
+            mBooleanExtra = getIntent().getBooleanExtra(EXTRA_EDIT, false);
+        }
 
         mFragmentManager = getSupportFragmentManager();
         Fragment fragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
         if (fragment == null) {
-            fragment = ReadFragment.newInstance();
+            fragment = ReadEditHostsFragment.newInstance(mBooleanExtra);
             mFragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
@@ -67,8 +79,14 @@ public class ReadActivity extends BaseAppCompatActivity
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                break;
+                return true;
         }
-        return true;
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sHostsString = null;
     }
 }

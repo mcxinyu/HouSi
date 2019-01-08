@@ -12,37 +12,37 @@ public class LogUtils {
 
     public static void i(String tag, String msg) {
         if (DEBUG) {
-            Log.i(tag, msg);
+            Log.i(tag, msg + "");
         }
     }
 
     public static void i(String tag, String msg, Throwable tr) {
         if (DEBUG) {
-            Log.i(tag, msg, tr);
+            Log.i(tag, msg + "", tr);
         }
     }
 
     public static void d(String tag, String msg) {
         if (DEBUG) {
-            Log.d(tag, msg);
+            Log.d(tag, msg + "");
         }
     }
 
     public static void d(String tag, String msg, Throwable tr) {
         if (DEBUG) {
-            Log.d(tag, msg, tr);
+            Log.d(tag, msg + "", tr);
         }
     }
 
     public static void e(String tag, String msg) {
         if (DEBUG) {
-            Log.e(tag, msg);
+            Log.e(tag, msg + "");
         }
     }
 
     public static void e(String tag, String msg, Throwable tr) {
         if (DEBUG) {
-            Log.e(tag, msg, tr);
+            Log.e(tag, msg + "", tr);
         }
     }
 }
