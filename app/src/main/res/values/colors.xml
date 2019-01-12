@@ -13,4 +13,9 @@
     <color name="black">#000000</color>
     <color name="gray">#9b9a9a</color>
 
+    <!--<color name="theme_bg_red_left">#fe957f</color>-->
+    <!--<color name="theme_bg_red_right">#fe451d</color>-->
+    <color name="theme_bg_red_left">#fe957f</color>
+    <color name="theme_bg_red_right">#FF4081</color>
+    <color name="mistyrose">#ffe4e1</color>
 </resources>

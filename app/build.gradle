@@ -117,6 +117,7 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'jp.wasabeef:richeditor-android:1.2.2'
     implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'com.github.florent37:viewanimator:1.0.5'
 }
 
 //apply plugin: 'com.google.gms.google-services'
