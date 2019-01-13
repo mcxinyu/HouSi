@@ -1,6 +1,7 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -32,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.florent37.viewanimator.AnimationListener;
 import com.github.florent37.viewanimator.ViewAnimator;
 
 import org.jsoup.Jsoup;
@@ -48,6 +51,7 @@ import io.github.mcxinyu.housi.activity.ReadEditHostsActivity;
 import io.github.mcxinyu.housi.util.ObservableRichEditor;
 import io.github.mcxinyu.housi.util.ScreenUtils;
 import io.github.mcxinyu.housi.util.StaticValues;
+import jp.wasabeef.richeditor.RichEditor;
 
 /**
  * Created by huangyuefeng on 2017/9/20.
@@ -57,6 +61,8 @@ public class ReadEditHostsFragment extends ABaseFragment {
     private static final String TAG = ReadEditHostsFragment.class.getSimpleName();
     private static final String ARGS_EDIT = "args_edit";
     private static final int WHAT_RESET = 1024;
+    private static final int WHAT_EDIT_PAGE = 1025;
+    private static final int WHAT_SAVE_PAGE = 1026;
 
     private static final String TEMP_HTML = "file:///android_asset/editor.html";
 
@@ -74,8 +80,6 @@ public class ReadEditHostsFragment extends ABaseFragment {
     AppCompatSpinner mToolbarSpinner;
     @BindView(R.id.relative_layout_title)
     RelativeLayout mRelativeLayoutTitle;
-    // @BindView(R.id.scroll_view)
-    // NestedScrollView mScrollView;
     @BindView(R.id.button_left)
     Button mButtonLeft;
     @BindView(R.id.edit_text_index)
@@ -84,6 +88,10 @@ public class ReadEditHostsFragment extends ABaseFragment {
     Button mButtonRight;
     @BindView(R.id.linear_layout_control)
     LinearLayout mLinearLayoutControl;
+    @BindView(R.id.text_view_status)
+    TextView mTextViewStatus;
+    @BindView(R.id.text_view_total_index)
+    TextView mTextViewTotalIndex;
     private Unbinder unbinder;
 
     @SuppressLint("HandlerLeak")
@@ -105,6 +113,26 @@ public class ReadEditHostsFragment extends ABaseFragment {
                                 .start();
                     }
                     break;
+                case WHAT_EDIT_PAGE:
+                    savePage();
+                    mTextViewStatus.setText("已保存✓");
+                    mHandler.sendEmptyMessageDelayed(WHAT_SAVE_PAGE, 1000);
+                    break;
+                case WHAT_SAVE_PAGE:
+                    if (mTextViewStatus.getAlpha() != 0) {
+                        mSaveAnimate = ViewAnimator.animate(mTextViewStatus)
+                                .alpha(mTextViewStatus.getAlpha(), 0)
+                                .duration(300)
+                                .accelerate()
+                                .onStop(new AnimationListener.Stop() {
+                                    @Override
+                                    public void onStop() {
+                                        mTextViewStatus.setText("");
+                                    }
+                                })
+                                .start();
+                    }
+                    break;
             }
         }
     };
@@ -115,8 +143,13 @@ public class ReadEditHostsFragment extends ABaseFragment {
     private ViewAnimator mStartAnimate;
     private ViewAnimator mResetAnimate;
     private int mCapacityPage;
-    private int mPage;
+    /**
+     * 可读页数，从 1 开始
+     */
+    private int mPage = 1;
     private boolean padding;
+    private ViewAnimator mEditAnimate;
+    private ViewAnimator mSaveAnimate;
 
     public static ReadEditHostsFragment newInstance(boolean edit) {
 
@@ -169,20 +202,49 @@ public class ReadEditHostsFragment extends ABaseFragment {
                 mRelativeLayoutTitle.setVisibility(View.GONE);
             }
         }
-        final String[] lineOptional = new String[]{"100行/页", "200行/页", "300行/页"};
+        final String[] lineOptional = new String[]{"500行/页", "1000行/页", "1500行/页", "2000行/页", "2500行/页"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.simple_spinner_item_theme_color, lineOptional);
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_theme_color);
 
         mToolbarSpinner.setAdapter(adapter);
         mToolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 if (mEditStatus) {
-                    mCapacityPage = (position + 1) * 100;
-
-                    dealHostsString();
-
-                    mEditTextIndex.setText(String.valueOf(mPage));
+                    if (position > 2) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("注意了哦")
+                                .setMessage("每页行数太多可能影响编辑体验，请量机而行。")
+                                .setPositiveButton("扶我起来试试", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mCapacityPage = (position + 1) * 500;
+                                        dealHostsString();
+                                        mEditTextIndex.setText(String.valueOf(mPage > mPageList.size() ?
+                                                mPage = mPageList.size() : mPage));
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("我再想想", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mToolbarSpinner.setSelection(mCapacityPage / 500 - 1);
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        mToolbarSpinner.setSelection(mCapacityPage / 500 - 1);
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        mCapacityPage = (position + 1) * 500;
+                        dealHostsString();
+                        mEditTextIndex.setText(String.valueOf(mPage > mPageList.size() ? mPage = mPageList.size() : mPage));
+                    }
                 }
             }
 
@@ -194,20 +256,18 @@ public class ReadEditHostsFragment extends ABaseFragment {
         mButtonLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                savePage();
                 mPage--;
-                if (mPage < 0)
-                    mPage = 0;
+                if (mPage <= 0)
+                    mPage = 1;
                 mEditTextIndex.setText(String.valueOf(mPage));
             }
         });
         mButtonRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                savePage();
                 mPage++;
-                if (mPage >= mPageList.size())
-                    mPage = mPageList.size() - 1;
+                if (mPage > mPageList.size())
+                    mPage = mPageList.size();
                 mEditTextIndex.setText(String.valueOf(mPage));
             }
         });
@@ -225,8 +285,16 @@ public class ReadEditHostsFragment extends ABaseFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 try {
-                    setPage(Integer.parseInt(s.toString()));
+                    mPage = Integer.parseInt(s.toString());
+                    if (mPage > mPageList.size()) {
+                        mPage = mPageList.size();
+                        mEditTextIndex.setText(String.valueOf(mPage));
+                        return;
+                    }
+                    setPage(mPage);
+                    mEditTextIndex.setSelection(mEditTextIndex.getText().length());
                 } catch (Exception e) {
+                    mEditTextIndex.setHint(String.valueOf(mPage));
                     e.printStackTrace();
                 }
             }
@@ -260,11 +328,14 @@ public class ReadEditHostsFragment extends ABaseFragment {
 
     private void savePage() {
         String html = mRichEditor.getHtml();
-        mPageList.set(mPage, html);
+        mPageList.set(mPage - 1, html);
     }
 
     private void dealHostsString() {
         if (!TextUtils.isEmpty(ReadEditHostsActivity.sHostsString)) {
+            tempSaveHosts();
+            mPageList.clear();
+
             String[] split = ReadEditHostsActivity.sHostsString.split("\n");
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < split.length; i++) {
@@ -283,6 +354,23 @@ public class ReadEditHostsFragment extends ABaseFragment {
                     stringBuilder.append("</br>");
                 }
             }
+            mTextViewTotalIndex.setText("/" + mPageList.size());
+            mTextViewTotalIndex.post(new Runnable() {
+                @Override
+                public void run() {
+                    mEditTextIndex.setPadding(0, 0, mTextViewTotalIndex.getWidth(), 0);
+                }
+            });
+        }
+    }
+
+    private void tempSaveHosts() {
+        if (mPageList.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String s : mPageList) {
+                stringBuilder.append(s);
+            }
+            ReadEditHostsActivity.sHostsString = stringBuilder.toString().replaceAll("</br>", "\n");
         }
     }
 
@@ -291,7 +379,7 @@ public class ReadEditHostsFragment extends ABaseFragment {
             return;
         }
         if (mPageList.size() > 0) {
-            mRichEditor.setHtml(mPageList.get(page));
+            mRichEditor.setHtml(mPageList.get(page - 1));
             if (!padding) {
                 padding = true;
                 mLinearLayoutControl.post(new Runnable() {
@@ -303,6 +391,8 @@ public class ReadEditHostsFragment extends ABaseFragment {
                 });
             }
         }
+        mButtonLeft.setEnabled(page > 1);
+        mButtonRight.setEnabled(page < mPageList.size());
     }
 
     @Override
@@ -319,6 +409,14 @@ public class ReadEditHostsFragment extends ABaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         mHandler.removeCallbacksAndMessages(null);
+        if (mEditAnimate != null) {
+            mEditAnimate.cancel();
+            mEditAnimate = null;
+        }
+        if (mSaveAnimate != null) {
+            mSaveAnimate.cancel();
+            mSaveAnimate = null;
+        }
         if (mStartAnimate != null) {
             mStartAnimate.cancel();
             mStartAnimate = null;
@@ -333,7 +431,26 @@ public class ReadEditHostsFragment extends ABaseFragment {
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void readHosts() {
         if (mEditStatus) {
-            // dealHostsString();
+            mRichEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
+                @Override
+                public void onTextChange(String text) {
+                    if (mTextViewStatus.getAlpha() != 1) {
+                        mEditAnimate = ViewAnimator.animate(mTextViewStatus)
+                                .alpha(mTextViewStatus.getAlpha(), 1)
+                                .duration(300)
+                                .accelerate()
+                                .onStart(new AnimationListener.Start() {
+                                    @Override
+                                    public void onStart() {
+                                        mTextViewStatus.setText("");
+                                    }
+                                })
+                                .start();
+                    }
+                    mHandler.removeMessages(WHAT_EDIT_PAGE);
+                    mHandler.sendEmptyMessageDelayed(WHAT_EDIT_PAGE, 2000);
+                }
+            });
         } else {
             mRichEditor.getSettings().setJavaScriptEnabled(true);
             mRichEditor.addJavascriptInterface(new HostsJavaScriptInterFace(), "hosts_script");

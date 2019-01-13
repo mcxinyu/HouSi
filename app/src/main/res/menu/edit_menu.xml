@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_save_hosts"
         android:orderInCategory="100"
-        android:title="@string/action_save"
+        android:title="@string/action_apply"
         app:showAsAction="always"/>
 </menu>

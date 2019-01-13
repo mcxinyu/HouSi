@@ -67,43 +67,84 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_marginRight="8dp"
         android:gravity="center_vertical"
-        android:minHeight="48dp">
+        android:minHeight="48dp"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_left"
+        <TextView
+            android:id="@+id/text_view_status"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_bg"
-            android:text="上一页"
-            android:textColor="@color/white"/>
-
-        <EditText
-            android:id="@+id/edit_text_index"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/shape_white_gray_stroke"
-            android:elevation="2dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="2dp"
+            android:alpha="0"
+            android:background="@drawable/shape_translucent"
             android:gravity="center"
-            android:inputType="number"
-            android:lines="1"
-            android:maxLength="3"
-            android:minWidth="48dp"
-            android:textColor="@color/colorAccent"
-            tools:text="1"/>
+            android:hint="编辑中..."
+            android:textColor="@color/googleGreen"
+            android:textColorHint="@color/white"
+            android:textSize="12sp"
+            tools:alpha="1"/>
 
-        <Button
-            android:id="@+id/button_right"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_bg"
-            android:text="下一页"
-            android:textColor="@color/white"/>
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:clickable="true">
+
+            <Button
+                android:id="@+id/button_left"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_bg"
+                android:enabled="false"
+                android:text="上一页"
+                android:textColor="@color/white"/>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/shape_white_gray_stroke"
+                android:elevation="2dp">
+
+                <EditText
+                    android:id="@+id/edit_text_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:hint="1"
+                    android:inputType="number"
+                    android:lines="1"
+                    android:maxLength="4"
+                    android:minWidth="24dp"
+                    android:textColor="@color/colorAccent"
+                    tools:paddingRight="24dp"/>
+
+                <TextView
+                    android:id="@+id/text_view_total_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    tools:text="/123"/>
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/button_right"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_bg"
+                android:enabled="false"
+                android:text="下一页"
+                android:textColor="@color/white"/>
+        </LinearLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
