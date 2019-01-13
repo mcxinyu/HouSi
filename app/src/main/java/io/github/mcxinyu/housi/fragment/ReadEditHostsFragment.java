@@ -352,6 +352,10 @@ public class ReadEditHostsFragment extends ABaseFragment {
                 } else {
                     stringBuilder.append(split[i]);
                     stringBuilder.append("</br>");
+                    if (i == split.length - 1) {
+                        mPageList.add(stringBuilder.toString());
+                        stringBuilder.delete(0, stringBuilder.length());
+                    }
                 }
             }
             mTextViewTotalIndex.setText("/" + mPageList.size());
@@ -370,7 +374,7 @@ public class ReadEditHostsFragment extends ABaseFragment {
             for (String s : mPageList) {
                 stringBuilder.append(s);
             }
-            ReadEditHostsActivity.sHostsString = stringBuilder.toString().replaceAll("</br>", "\n");
+            ReadEditHostsActivity.sHostsString = stringBuilder.toString().replaceAll("\\</br\\>", "\n");
         }
     }
 
