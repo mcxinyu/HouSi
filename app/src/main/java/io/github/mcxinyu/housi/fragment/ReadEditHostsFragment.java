@@ -1,14 +1,19 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
@@ -32,7 +37,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.florent37.viewanimator.AnimationListener;
 import com.github.florent37.viewanimator.ViewAnimator;
@@ -40,14 +44,18 @@ import com.github.florent37.viewanimator.ViewAnimator;
 import org.jsoup.Jsoup;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import eu.chainfire.libsuperuser.Shell;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.activity.ReadEditHostsActivity;
+import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.ObservableRichEditor;
 import io.github.mcxinyu.housi.util.ScreenUtils;
 import io.github.mcxinyu.housi.util.StaticValues;
@@ -211,7 +219,7 @@ public class ReadEditHostsFragment extends ABaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 if (mEditStatus) {
-                    if (position > 2) {
+                    if (position > 2 && mPageList.size() > 1) {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("注意了哦")
                                 .setMessage("每页行数太多可能影响编辑体验，请量机而行。")
@@ -374,7 +382,9 @@ public class ReadEditHostsFragment extends ABaseFragment {
             for (String s : mPageList) {
                 stringBuilder.append(s);
             }
-            ReadEditHostsActivity.sHostsString = stringBuilder.toString().replaceAll("\\</br\\>", "\n");
+            ReadEditHostsActivity.sHostsString = stringBuilder.toString()
+                    .replaceAll("</br>", "\n")
+                    .replaceAll("<br>", "\n");
         }
     }
 
@@ -510,11 +520,107 @@ public class ReadEditHostsFragment extends ABaseFragment {
                 ReadEditHostsActivity.sHostsString = mHostsHtml;
                 startActivity(ReadEditHostsActivity.newIntent(getContext(), true));
                 return true;
-            case R.id.action_save_hosts:
-                // TODO: 2019/1/8 save hosts
-                Toast.makeText(getContext(), "do save", Toast.LENGTH_SHORT).show();
+            case R.id.action_apply_hosts:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("注意了哦")
+                        .setMessage("确认要应用你编辑的 hosts 文件吗？")
+                        .setPositiveButton("执行", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                new ApplyHosts().execute();
+                            }
+                        })
+                        .setNegativeButton("我再想想", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class ApplyHosts extends AsyncTask<Void, Void, Void> {
+        ProgressDialog dialog = null;
+        boolean suAvailable = false;
+        List<String> suResult = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage(getString(R.string.do_on_apply_hosts));
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            suAvailable = Shell.SU.available();
+            if (!suAvailable) {
+                return null;
+            }
+
+            initTempHostFile();
+
+            suResult = Shell.SU.run(new String[]{
+                    StaticValues.MOUNT_SYSTEM_RW,
+                    "cp " + getTempHostsFilePath() + " " + StaticValues.SYSTEM_HOSTS_FILE_PATH,
+                    StaticValues.MOUNT_SYSTEM_RO
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
+
+            if (!suAvailable) {
+                Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
+            } else if (suResult != null) {
+                for (int i = 0; i < suResult.size(); i++) {
+                    LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
+                }
+                Snackbar.make(mParentView,
+                        suResult.size() == 0 ? getString(R.string.apply_hosts_success) : getString(R.string.apply_hosts_failure),
+                        Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @WorkerThread
+    private void initTempHostFile() {
+        tempSaveHosts();
+        File file = new File(getTempHostsFilePath());
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(file);
+            fileWriter.write(ReadEditHostsActivity.sHostsString);
+            fileWriter.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @NonNull
+    private String getTempHostsFilePath() {
+        return getActivity().getFilesDir().getAbsolutePath() +
+                File.separator + StaticValues.TEMP_EDIT_HOSTS_NAME;
     }
 }
