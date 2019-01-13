@@ -199,6 +199,14 @@ public class ReadEditHostsFragment extends ABaseFragment {
         readHosts();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mEditStatus) {
+            readHosts();
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void initToolbar() {
         if (mToolbar != null) {
@@ -335,8 +343,10 @@ public class ReadEditHostsFragment extends ABaseFragment {
     }
 
     private void savePage() {
-        String html = mRichEditor.getHtml();
-        mPageList.set(mPage - 1, html);
+        if (mPageList.size() > 0) {
+            String html = mRichEditor.getHtml();
+            mPageList.set(mPage - 1, html);
+        }
     }
 
     private void dealHostsString() {
@@ -377,6 +387,15 @@ public class ReadEditHostsFragment extends ABaseFragment {
     }
 
     private void tempSaveHosts() {
+        mHandler.removeCallbacksAndMessages(null);
+        savePage();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextViewStatus.setText("已保存✓");
+                mHandler.sendEmptyMessageDelayed(WHAT_SAVE_PAGE, 1000);
+            }
+        });
         if (mPageList.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             for (String s : mPageList) {
@@ -484,7 +503,7 @@ public class ReadEditHostsFragment extends ABaseFragment {
                         mToolbar.setSubtitle(url);
                     }
                     mSwipeRefresh.setRefreshing(false);
-                    mSwipeRefresh.setEnabled(false);
+                    // mSwipeRefresh.setEnabled(false);
                 }
             });
 
