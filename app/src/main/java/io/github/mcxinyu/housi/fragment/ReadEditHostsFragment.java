@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -100,6 +101,10 @@ public class ReadEditHostsFragment extends ABaseFragment {
     TextView mTextViewStatus;
     @BindView(R.id.text_view_total_index)
     TextView mTextViewTotalIndex;
+    @BindView(R.id.button_undo)
+    ImageButton mButtonUndo;
+    @BindView(R.id.button_redo)
+    ImageButton mButtonRedo;
     private Unbinder unbinder;
 
     @SuppressLint("HandlerLeak")
@@ -267,6 +272,18 @@ public class ReadEditHostsFragment extends ABaseFragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+        mButtonUndo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRichEditor.undo();
+            }
+        });
+        mButtonRedo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRichEditor.redo();
             }
         });
         mButtonLeft.setOnClickListener(new View.OnClickListener() {
@@ -518,7 +535,18 @@ public class ReadEditHostsFragment extends ABaseFragment {
         public void getSource(String html) {
             if (!mEditStatus) {
                 mHostsHtml = Jsoup.parse(html).text();
+                if (!TextUtils.isEmpty(mHostsHtml)) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (!TextUtils.isEmpty(mHostsHtml)) {
+            menu.findItem(R.id.action_edit_hosts).setVisible(true);
         }
     }
 
