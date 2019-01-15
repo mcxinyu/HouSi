@@ -13,6 +13,7 @@
     <string name="update_hosts">更新 hosts</string>
     <string name="reset_hosts">重置 hosts</string>
     <string name="read_hosts">查看 hosts</string>
+    <string name="read_edit_hosts">查看『biānjí』hosts</string>
     <string name="no_root">此设备没有 root，本程序无法正常工作。</string>
     <string name="no_su">没有获得 root 权限，该功能无法正常工作。</string>
     <string name="action_cancel">取消操作</string>

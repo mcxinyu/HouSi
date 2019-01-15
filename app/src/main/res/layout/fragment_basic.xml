@@ -105,7 +105,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:text="@string/read_hosts"
+                android:text="@string/read_edit_hosts"
                 android:textAllCaps="false"
                 android:textSize="16sp"/>
         </LinearLayout>
