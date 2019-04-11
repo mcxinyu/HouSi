@@ -16,12 +16,30 @@ import rx.Observable;
  */
 public interface SourceApi {
 
+    /**
+     * 获取 hosts 源地址配置文件
+     *
+     * @param sourceKey
+     * @return
+     */
     @GET("{source_key}/raw?blob_name=source.json")
     Observable<SourceConfig> getSourceConfig(@Path("source_key") String sourceKey);
 
+    /**
+     * 获取 hosts 文件
+     *
+     * @param source
+     * @return
+     */
     @GET
     Observable<ResponseBody> getSourceHosts(@Url String source);
 
+    /**
+     * 从 git 获取 hosts 文件的更新时间
+     *
+     * @param repos
+     * @return
+     */
     @GET
     Observable<List<GitRepos>> getSourceUpdateDate(@Url String repos);
 }
