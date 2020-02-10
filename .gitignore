@@ -63,3 +63,4 @@ fastlane/readme.md
 .idea/
 app/secure/
 app/housi/
+*.jks
