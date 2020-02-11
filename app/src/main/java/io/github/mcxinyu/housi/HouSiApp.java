@@ -2,12 +2,13 @@ package io.github.mcxinyu.housi;
 
 import android.app.Application;
 
+import com.pgyersdk.crash.PgyCrashManager;
+
 /**
  * Created by huangyuefeng on 2017/9/13.
  * Contact me : mcxinyu@gmail.com
  */
 public class HouSiApp extends Application {
-    private static final String TAG = "HouSiApp";
     private static HouSiApp houSiApp;
 
     public static HouSiApp getInstance() {
@@ -17,7 +18,8 @@ public class HouSiApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        PgyCrashManager.register(this);
         houSiApp = this;
-        // LogUtils.d(TAG, FirebaseInstanceId.getInstance().getToken() + "");
     }
+
 }
