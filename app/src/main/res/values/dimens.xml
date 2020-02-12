@@ -7,4 +7,9 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="launch_screens_logo_bottom">48dp</dimen>
     <dimen name="launch_screens_name_logo_bottom">100dp</dimen>
+
+    <dimen name="mini_margin_2dp">2dp</dimen>
+    <dimen name="mini_margin_4dp">4dp</dimen>
+    <dimen name="normal_margin_8d0">8dp</dimen>
+    <dimen name="normal_margin_16d0">16dp</dimen>
 </resources>

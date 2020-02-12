@@ -4,5 +4,23 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_basic">基本</string>
+    <string name="action_source">来源</string>
     <string name="action_settings">设置</string>
+    <string name="action_feedback">反馈</string>
+    <string name="action_group_communicate">沟通</string>
+    <string name="app_description">欢迎光临</string>
+    <string name="update_hosts">更新 hosts</string>
+    <string name="reset_hosts">重置 hosts</string>
+    <string name="read_hosts">查看 hosts</string>
+    <string name="no_root">此设备没有 root，本程序无法正常工作。</string>
+    <string name="no_su">没有获得 root 权限，本程序无法正常工作。</string>
+    <string name="action_cancel">取消操作</string>
+    <string name="do_on_update_hosts">获取 hosts 文件中…</string>
+    <string name="update_hosts_failure">加载 hosts 失败</string>
+    <string name="update_hosts_success">加载 hosts 成功</string>
+    <string name="do_on_reset_hosts">重置 hosts 中…</string>
+    <string name="reset_hosts_success">重置 hosts 成功</string>
+    <string name="reset_hosts_failure">重置 hosts 失败</string>
+    <string name="error">好像哪里出错了</string>
 </resources>
