@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-
 import androidx.core.app.Fragment;
 import androidx.core.app.FragmentManager;
 import androidx.core.app.FragmentTransaction;
@@ -13,7 +12,6 @@ import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;

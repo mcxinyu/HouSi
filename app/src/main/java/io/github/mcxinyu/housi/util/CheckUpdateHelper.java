@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-
 import androidx.core.app.Fragment;
 
 import com.pgyersdk.javabean.AppBean;
