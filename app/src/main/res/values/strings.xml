@@ -25,4 +25,21 @@
     <string name="error">好像哪里出错了</string>
     <string name="network_error">网络出错</string>
     <string name="network_connect_error">网络连接出错</string>
+
+    <string name="source_routing_built_in">内置</string>
+    <string name="source_routing_diy">自定义</string>
+    <string name="source_routing_file">来自文件</string>
+
+    <string name="source_built_in_update">刷新内置源列表</string>
+    <string name="source_built_in_name">内置源名称</string>
+    <string name="source_built_in_name_hint">来自 xxx</string>
+    <string name="source_built_in_detail">来源信息</string>
+    <string name="source_built_in_download_url">来源下载地址</string>
+    <string name="source_built_in_download_url_hint">https:www.google.com/hosts</string>
+    <string name="source_built_in_date">最后更新时间</string>
+    <string name="source_built_in_date_hint">n/a</string>
+    <string name="source_built_in_update_refresh">获取列表中</string>
+    <string name="source_built_in_update_refresh_success">获取列表成功</string>
+    <string name="source_built_in_update_refresh_failure">获取列表失败，请重试。</string>
+    <string name="source_built_in_update_refresh_please">请先刷新列表</string>
 </resources>

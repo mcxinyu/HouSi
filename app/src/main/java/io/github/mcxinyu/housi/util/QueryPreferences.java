@@ -10,6 +10,8 @@ import android.preference.PreferenceManager;
 public class QueryPreferences {
     private static final String IS_DRAWER_OPENED = "is_drawer_opened";
 
+    private static final String SOURCE_ROUTING = "source_routing";
+
     public static boolean getDrawerOpenState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(IS_DRAWER_OPENED, false);
@@ -19,6 +21,18 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(IS_DRAWER_OPENED, enable)
+                .apply();
+    }
+
+    public static int getSourceRouting(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(SOURCE_ROUTING, 0);
+    }
+
+    public static void setSourceRouting(Context context, int routing) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(SOURCE_ROUTING, routing)
                 .apply();
     }
 }

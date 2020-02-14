@@ -1,13 +1,13 @@
 package io.github.mcxinyu.housi.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import androidx.core.app.Fragment;
-import androidx.core.app.FragmentManager;
-import androidx.core.app.FragmentTransaction;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -33,6 +33,7 @@ import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.fragment.ABaseFragment;
 import io.github.mcxinyu.housi.fragment.BasicFragment;
+import io.github.mcxinyu.housi.fragment.SourceFragment;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.QueryPreferences;
 
@@ -41,19 +42,19 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
  * Contact me : mcxinyu@gmail.com
  */
 public class MainActivity extends BaseAppCompatActivity
-        implements ABaseFragment.FragmentCallbacks, BasicFragment.Callbacks {
+        implements ABaseFragment.FragmentCallbacks, BasicFragment.Callbacks,
+        SourceFragment.Callbacks {
+
     private static final int WHAT_CHECK_UPDATE = 1024;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.nav_view)
-    NavigationView mNavView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
     @BindView(R.id.no_su_text_view)
     TextView mNoSuTextView;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
     private Unbinder unbinder;
 
     private Handler mHandler = new Handler() {
@@ -72,10 +73,13 @@ public class MainActivity extends BaseAppCompatActivity
         }
     };
 
+    ActionBarDrawerToggle mToggle;
+
     private FragmentManager mFragmentManager;
     private Fragment currentFragment;
 
     private BasicFragment mBasicFragment;
+    private SourceFragment mSourceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,7 @@ public class MainActivity extends BaseAppCompatActivity
 
         initDrawer();
 
-        mFragmentManager = getSupportFragmentManager();
+        mFragmentManager = getFragmentManager();
         currentFragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
         if (currentFragment == null) {
@@ -100,24 +104,26 @@ public class MainActivity extends BaseAppCompatActivity
     }
 
     private void initDrawer() {
-        setSupportActionBar(mToolbar);
+        // setSupportActionBar(mToolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        // ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(
+        //         this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        // mDrawerLayout.addDrawerListener(mToggle);
+        // mToggle.syncState();
 
         mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_basic:
-                        if (mBasicFragment == null) {
+                        if (mBasicFragment == null)
                             mBasicFragment = BasicFragment.newInstance();
-                        }
                         switchFragment(mBasicFragment);
                         break;
                     case R.id.nav_source:
+                        if (mSourceFragment == null)
+                            mSourceFragment = SourceFragment.newInstance();
+                        switchFragment(mSourceFragment);
                         break;
                     case R.id.nav_setting:
                         break;
@@ -184,8 +190,8 @@ public class MainActivity extends BaseAppCompatActivity
                         .add(R.id.fragment_container, fragment)
                         .commit();
             }
-            // currentFragment.setUserVisibleHint(false);
-            // fragment.setUserVisibleHint(true);
+            currentFragment.setUserVisibleHint(false);
+            fragment.setUserVisibleHint(true);
             currentFragment = fragment;
         }
     }
@@ -225,14 +231,16 @@ public class MainActivity extends BaseAppCompatActivity
     }
 
     @Override
-    public void setToolbarTitle(String title) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(title);
+    public void setDrawerMenuClicked(int item) {
+        mNavView.getMenu().findItem(item).setChecked(true);
     }
 
     @Override
-    public void setDrawerMenuClicked(int item) {
-        mNavView.getMenu().findItem(item).setChecked(true);
+    public void initToolbar(Toolbar toolbar) {
+        mToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
     }
 
     @Override

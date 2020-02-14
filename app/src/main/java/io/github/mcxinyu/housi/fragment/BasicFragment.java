@@ -6,14 +6,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
-import android.support.percent.PercentRelativeLayout;
+
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +45,8 @@ import rx.schedulers.Schedulers;
 public class BasicFragment extends ABaseFragment {
     private static final String TAG = "BasicFragment";
 
-    @BindView(R.id.this_container)
-    PercentRelativeLayout mThisContainer;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.icon_image_view)
     ImageView mIconImageView;
     @BindView(R.id.app_name)
@@ -59,9 +59,7 @@ public class BasicFragment extends ABaseFragment {
     Button mResetHostsButton;
     @BindView(R.id.read_hosts_button)
     Button mReadHostsButton;
-    @BindView(R.id.button_activate)
-    LinearLayout mButtonActivate;
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     public static BasicFragment newInstance() {
 
@@ -111,7 +109,13 @@ public class BasicFragment extends ABaseFragment {
                 readHosts();
             }
         });
+
+        initToolbar();
         return view;
+    }
+
+    private void initToolbar() {
+        mToolbar.setTitle(getString(R.string.action_basic));
     }
 
     @Override
@@ -121,7 +125,7 @@ public class BasicFragment extends ABaseFragment {
     }
 
     private String getEmptyHostPath() {
-        return getContext().getFilesDir().getAbsolutePath() + File.separator + StaticValues.EMPTY_HOST_NAME;
+        return getActivity().getFilesDir().getAbsolutePath() + File.separator + StaticValues.EMPTY_HOST_NAME;
     }
 
     @WorkerThread
@@ -151,13 +155,13 @@ public class BasicFragment extends ABaseFragment {
     }
 
     @Override
-    protected String getToolBarTitle() {
-        return getString(R.string.action_basic);
+    protected int getMenuItemId() {
+        return R.id.nav_basic;
     }
 
     @Override
-    protected int getMenuItemId() {
-        return R.id.nav_basic;
+    protected Toolbar getToolBar() {
+        return mToolbar;
     }
 
     private void readHosts() {
@@ -172,7 +176,7 @@ public class BasicFragment extends ABaseFragment {
         dialog.setCancelable(false);
         dialog.show();
 
-        SourceApiHelper.getSourceHosts(getContext(), ApiRetrofit.BASE_TEMP_URL)
+        SourceApiHelper.getSourceHosts(getActivity(), ApiRetrofit.BASE_TEMP_URL)
                 .map(new Func1<File, Integer>() {
                     @Override
                     public Integer call(File file) {
@@ -209,7 +213,7 @@ public class BasicFragment extends ABaseFragment {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         dialog.dismiss();
-                        Toast.makeText(getContext(), StateUtils.handleException(e), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), StateUtils.handleException(e), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -217,14 +221,14 @@ public class BasicFragment extends ABaseFragment {
                         switch (integer) {
                             case -2:
                             case -1:
-                                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
                                 mCallbacks.hasRoot(false);
                                 break;
                             case 0:
-                                Toast.makeText(getContext(), getString(R.string.update_hosts_success), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getString(R.string.update_hosts_success), Toast.LENGTH_SHORT).show();
                                 break;
                             default:
-                                Toast.makeText(getContext(), getString(R.string.update_hosts_failure), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getString(R.string.update_hosts_failure), Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
