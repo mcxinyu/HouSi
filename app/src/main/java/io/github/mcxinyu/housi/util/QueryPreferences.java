@@ -12,6 +12,9 @@ public class QueryPreferences {
 
     private static final String SOURCE_ROUTING = "source_routing";
 
+    private static final String SOURCE_BUILT_IN_DOWNLOAD_URL = "source_built_in_download_url";
+    private static final String SOURCE_DIY_DOWNLOAD_URL = "source_diy_download_url";
+
     public static boolean getDrawerOpenState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(IS_DRAWER_OPENED, false);
@@ -34,5 +37,15 @@ public class QueryPreferences {
                 .edit()
                 .putInt(SOURCE_ROUTING, routing)
                 .apply();
+    }
+
+    public static String getSourceBuiltInDownloadUrl(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SOURCE_BUILT_IN_DOWNLOAD_URL, null);
+    }
+
+    public static String getSourceDiyDownloadUrl(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SOURCE_DIY_DOWNLOAD_URL, null);
     }
 }

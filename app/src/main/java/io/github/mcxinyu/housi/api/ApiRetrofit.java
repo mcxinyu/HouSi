@@ -29,7 +29,6 @@ public class ApiRetrofit {
     private SourceApi mSourceApi;
 
     public static final String BASE_CONFIG_URL = "https://gitee.com/mcxinyu/codes/";
-    public static final String BASE_TEMP_URL = "https://raw.githubusercontent.com/googlehosts/hosts/master/hosts-files/hosts";
 
     public SourceApi getSourceApi() {
         return mSourceApi;

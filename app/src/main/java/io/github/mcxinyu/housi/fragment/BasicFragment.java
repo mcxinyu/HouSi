@@ -6,9 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
-
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +24,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import eu.chainfire.libsuperuser.Shell;
+import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
-import io.github.mcxinyu.housi.api.ApiRetrofit;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
+import io.github.mcxinyu.housi.util.QueryPreferences;
 import io.github.mcxinyu.housi.util.StateUtils;
 import io.github.mcxinyu.housi.util.StaticValues;
 import rx.Observer;
@@ -170,13 +169,31 @@ public class BasicFragment extends ABaseFragment {
 
     @SuppressWarnings("deprecation")
     private void updateHosts() {
+        String hostsUrl = null;
+        int routing = QueryPreferences.getSourceRouting(getActivity());
+        switch (routing) {
+            case 0:
+                hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                break;
+            case 1:
+                hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
+                if (hostsUrl == null) {
+                    hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                }
+                break;
+        }
+
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setMessage(getString(R.string.do_on_update_hosts));
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.show();
 
-        SourceApiHelper.getSourceHosts(getActivity(), ApiRetrofit.BASE_TEMP_URL)
+        if (hostsUrl == null) {
+            hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
+        }
+
+        SourceApiHelper.getSourceHosts(getActivity(), hostsUrl)
                 .map(new Func1<File, Integer>() {
                     @Override
                     public Integer call(File file) {
@@ -283,7 +300,7 @@ public class BasicFragment extends ABaseFragment {
                 mCallbacks.hasRoot(suAvailable);
             } else if (suResult != null) {
                 for (int i = 0; i < suResult.size(); i++) {
-                    Log.d(TAG, "suResult line " + i + " : " + suResult.get(i));
+                    LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
                 }
                 Toast.makeText(getContext(),
                         suResult.size() == 0 ? getString(R.string.reset_hosts_success) : getString(R.string.reset_hosts_failure),

@@ -6,9 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +41,8 @@ public class SourceFragment extends ABaseFragment {
     private FragmentManager mFragmentManager;
     private Fragment currentFragment;
     private SourceBuiltInFragment mSourceBuiltInFragment;
+    private SourceDiyFragment mSourceDiyFragment;
+    private SourceFileFragment mSourceFileFragment;
 
     public static SourceFragment newInstance() {
 
@@ -75,15 +75,34 @@ public class SourceFragment extends ABaseFragment {
         initToolbar();
 
         mFragmentManager = getChildFragmentManager();
-        currentFragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
+        initFragment();
+
+        return view;
+    }
+
+    private void initFragment() {
+        currentFragment = mFragmentManager.findFragmentById(R.id.fragment_container);
         if (currentFragment == null) {
-            currentFragment = mSourceBuiltInFragment = SourceBuiltInFragment.newInstance();
+            int routing = QueryPreferences.getSourceRouting(getActivity());
+            switch (routing) {
+                case 0:
+                    if (mSourceBuiltInFragment == null)
+                        currentFragment = mSourceBuiltInFragment = SourceBuiltInFragment.newInstance();
+                    break;
+                case 1:
+                    if (mSourceDiyFragment == null)
+                        currentFragment = mSourceDiyFragment = SourceDiyFragment.newInstance();
+                    break;
+                case 2:
+                    if (mSourceFileFragment == null)
+                        currentFragment = mSourceFileFragment = SourceFileFragment.newInstance();
+                    break;
+            }
             mFragmentManager.beginTransaction()
                     .add(R.id.fragment_container, currentFragment)
                     .commit();
         }
-        return view;
     }
 
     private void initToolbar() {
@@ -104,7 +123,10 @@ public class SourceFragment extends ABaseFragment {
         mToolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                QueryPreferences.setSourceRouting(getActivity(), i);
+                // if (i != 2) {
+                //     // 2 是选择文件更新，属于一次性行为
+                //     QueryPreferences.setSourceRouting(getActivity(), i);
+                // }
                 switch (i) {
                     case 0:
                         if (mSourceBuiltInFragment == null)
@@ -112,8 +134,14 @@ public class SourceFragment extends ABaseFragment {
                         switchFragment(mSourceBuiltInFragment);
                         break;
                     case 1:
+                        if (mSourceDiyFragment == null)
+                            mSourceDiyFragment = SourceDiyFragment.newInstance();
+                        switchFragment(mSourceDiyFragment);
                         break;
                     case 2:
+                        if (mSourceFileFragment == null)
+                            mSourceFileFragment = SourceFileFragment.newInstance();
+                        switchFragment(mSourceFileFragment);
                         break;
                 }
             }

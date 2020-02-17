@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <PreferenceCategory android:title="@string/source_detail">
+        <EditTextPreference
+            android:dialogTitle="@string/source_download_url"
+            android:key="source_diy_download_url"
+            android:title="@string/source_download_url"
+            android:summary="@string/source_diy_download_url_hint" />
+        <PreferenceScreen
+            android:selectable="false"
+            android:summary="@string/source_diy_note" />
+    </PreferenceCategory>
+</PreferenceScreen>

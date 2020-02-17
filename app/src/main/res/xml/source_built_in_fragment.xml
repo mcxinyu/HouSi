@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:key="parent_screen">
     <PreferenceScreen
         android:key="source_built_in_update"
         android:summary="@string/source_built_in_update_refresh_please"
@@ -11,17 +12,21 @@
         android:selectable="false"
         android:title="@string/source_built_in_name"
         tools:summary="@string/source_built_in_name_hint" />
-    <PreferenceCategory android:title="@string/source_built_in_detail">
-        <EditTextPreference
-            android:dialogTitle="@string/source_built_in_download_url"
+    <PreferenceCategory android:title="@string/source_detail">
+        <io.github.mcxinyu.housi.util.ValidatedEditTextPreference
+            android:dialogTitle="@string/source_download_url"
             android:key="source_built_in_download_url"
             android:selectable="false"
-            android:title="@string/source_built_in_download_url"
+            android:textIsSelectable="true"
+            android:title="@string/source_download_url"
             tools:summary="@string/source_built_in_download_url_hint" />
         <PreferenceScreen
             android:key="source_built_in_date"
             android:selectable="false"
-            android:title="@string/source_built_in_date"
-            android:summary="@string/source_built_in_date_hint" />
+            android:summary="@string/source_built_in_date_hint"
+            android:title="@string/source_built_in_date" />
+        <PreferenceScreen
+            android:selectable="false"
+            android:summary="@string/source_built_in_note" />
     </PreferenceCategory>
 </PreferenceScreen>
