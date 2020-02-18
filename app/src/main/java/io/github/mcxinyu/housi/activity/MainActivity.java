@@ -13,7 +13,6 @@ import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +61,7 @@ public class MainActivity extends BaseAppCompatActivity
         @Override
         public void handleMessage(Message msg) {
             if (!QueryPreferences.getDrawerOpenState(MainActivity.this)) {
-                mDrawerLayout.openDrawer(Gravity.START);
+                // mDrawerLayout.openDrawer(Gravity.START);
                 QueryPreferences.setDrawerOpenState(MainActivity.this, true);
             }
 
