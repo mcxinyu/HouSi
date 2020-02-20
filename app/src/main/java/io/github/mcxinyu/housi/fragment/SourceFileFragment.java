@@ -168,7 +168,7 @@ public class SourceFileFragment extends PreferenceFragment {
                 Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
                 mCallbacks.hasRoot(suAvailable);
             } else if (suResult != null) {
-                mSourceFilePath.setSummary(mFilePath);
+                mSourceFilePath.setSummary(mFilePath + " " + getString(R.string.update_hosts_success));
                 for (int i = 0; i < suResult.size(); i++) {
                     LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
                 }

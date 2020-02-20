@@ -17,8 +17,8 @@
     <string name="no_su">没有获得 root 权限，本程序无法正常工作。</string>
     <string name="action_cancel">取消操作</string>
     <string name="do_on_update_hosts">获取 hosts 文件中…</string>
-    <string name="update_hosts_failure">加载 hosts 失败</string>
-    <string name="update_hosts_success">加载 hosts 成功</string>
+    <string name="update_hosts_failure">更新 hosts 失败</string>
+    <string name="update_hosts_success">更新 hosts 成功</string>
     <string name="do_on_reset_hosts">重置 hosts 中…</string>
     <string name="reset_hosts_success">重置 hosts 成功</string>
     <string name="reset_hosts_failure">重置 hosts 失败</string>
