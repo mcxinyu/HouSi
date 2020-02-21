@@ -1,9 +1,11 @@
 package io.github.mcxinyu.housi.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -55,6 +57,20 @@ public class SourceFragment extends ABaseFragment {
 
     private Callbacks mCallbacks;
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity instanceof Callbacks) {
+                mCallbacks = (Callbacks) activity;
+            } else {
+                throw new RuntimeException(activity.toString()
+                        + " must implement Callbacks");
+            }
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -62,7 +78,7 @@ public class SourceFragment extends ABaseFragment {
             mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement BackHandledInterface");
+                    + " must implement Callbacks");
         }
     }
 

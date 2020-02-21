@@ -3,9 +3,9 @@ package io.github.mcxinyu.housi.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.appcompat.BuildConfig;
-
 import com.pgyersdk.crash.PgyCrashManager;
+
+import io.github.mcxinyu.housi.BuildConfig;
 
 /**
  * Created by huangyuefeng on 2017/9/13.

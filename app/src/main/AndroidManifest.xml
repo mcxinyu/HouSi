@@ -37,6 +37,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.ReadActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/read_hosts"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="io.github.mcxinyu.housi.checkupdate"

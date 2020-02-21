@@ -1,8 +1,10 @@
 package io.github.mcxinyu.housi.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -27,6 +29,7 @@ import butterknife.Unbinder;
 import eu.chainfire.libsuperuser.Shell;
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
+import io.github.mcxinyu.housi.activity.ReadActivity;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -73,6 +76,20 @@ public class BasicFragment extends ABaseFragment {
     }
 
     private Callbacks mCallbacks;
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity instanceof Callbacks) {
+                mCallbacks = (Callbacks) activity;
+            } else {
+                throw new RuntimeException(activity.toString()
+                        + " must implement Callbacks");
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -127,7 +144,7 @@ public class BasicFragment extends ABaseFragment {
     }
 
     private String getEmptyHostPath() {
-        return getActivity().getFilesDir().getAbsolutePath() + File.separator + StaticValues.EMPTY_HOST_NAME;
+        return getActivity().getFilesDir().getAbsolutePath() + File.separator + StaticValues.EMPTY_HOSTS_NAME;
     }
 
     @WorkerThread
@@ -141,7 +158,7 @@ public class BasicFragment extends ABaseFragment {
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(file);
-            fileWriter.write(StaticValues.EMPTY_HOST_VALUE);
+            fileWriter.write(StaticValues.EMPTY_HOSTS_VALUE);
             fileWriter.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,7 +184,8 @@ public class BasicFragment extends ABaseFragment {
     }
 
     private void readHosts() {
-        // TODO: 2017/9/17
+        startActivity(ReadActivity.newIntent(getActivity()));
+        // Snackbar.make(mParentView, getString(R.string.has_nothing), Snackbar.LENGTH_SHORT).show();
     }
 
     @SuppressWarnings("deprecation")
@@ -207,7 +225,7 @@ public class BasicFragment extends ABaseFragment {
 
                         List<String> suResult = Shell.SU.run(new String[]{
                                 StaticValues.MOUNT_SYSTEM_RW,
-                                "cp " + file.getAbsolutePath() + " " + StaticValues.SYSTEM_HOST_FILE_PATH,
+                                "cp " + file.getAbsolutePath() + " " + StaticValues.SYSTEM_HOSTS_FILE_PATH,
                                 StaticValues.MOUNT_SYSTEM_RO
                         });
 
@@ -241,8 +259,8 @@ public class BasicFragment extends ABaseFragment {
                         switch (integer) {
                             case -2:
                             case -1:
-                                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
-                                mCallbacks.hasRoot(false);
+                                Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
+                                // mCallbacks.hasRoot(false);
                                 break;
                             case 0:
                                 Snackbar.make(mParentView, getString(R.string.update_hosts_success), Snackbar.LENGTH_SHORT).show();
@@ -286,7 +304,7 @@ public class BasicFragment extends ABaseFragment {
 
             suResult = Shell.SU.run(new String[]{
                     StaticValues.MOUNT_SYSTEM_RW,
-                    "cp " + getEmptyHostPath() + " " + StaticValues.SYSTEM_HOST_FILE_PATH,
+                    "cp " + getEmptyHostPath() + " " + StaticValues.SYSTEM_HOSTS_FILE_PATH,
                     StaticValues.MOUNT_SYSTEM_RO
             });
 
@@ -299,8 +317,8 @@ public class BasicFragment extends ABaseFragment {
             dialog.dismiss();
 
             if (!suAvailable) {
-                Snackbar.make(mParentView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
-                mCallbacks.hasRoot(suAvailable);
+                Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
+                // mCallbacks.hasRoot(suAvailable);
             } else if (suResult != null) {
                 for (int i = 0; i < suResult.size(); i++) {
                     LogUtils.d(TAG, "suResult line " + i + " : " + suResult.get(i));
@@ -315,6 +333,6 @@ public class BasicFragment extends ABaseFragment {
     }
 
     public interface Callbacks {
-        void hasRoot(boolean hasRoot);
+        // void hasRoot(boolean hasRoot);
     }
 }

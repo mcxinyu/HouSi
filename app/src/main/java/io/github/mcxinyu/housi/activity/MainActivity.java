@@ -12,10 +12,8 @@ import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -35,6 +33,7 @@ import io.github.mcxinyu.housi.fragment.BasicFragment;
 import io.github.mcxinyu.housi.fragment.SourceFileFragment;
 import io.github.mcxinyu.housi.fragment.SourceFragment;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
+import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
 
 /**
@@ -42,15 +41,13 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
  * Contact me : mcxinyu@gmail.com
  */
 public class MainActivity extends BaseAppCompatActivity
-        implements ABaseFragment.FragmentCallbacks, BasicFragment.Callbacks,
+        implements ABaseFragment.Callbacks, BasicFragment.Callbacks,
         SourceFragment.Callbacks, SourceFileFragment.Callbacks {
 
     private static final int WHAT_CHECK_UPDATE = 1024;
 
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
-    @BindView(R.id.no_su_text_view)
-    TextView mNoSuTextView;
     @BindView(R.id.nav_view)
     NavigationView mNavView;
     @BindView(R.id.drawer_layout)
@@ -77,9 +74,10 @@ public class MainActivity extends BaseAppCompatActivity
 
     private FragmentManager mFragmentManager;
     private Fragment currentFragment;
-
     private BasicFragment mBasicFragment;
     private SourceFragment mSourceFragment;
+
+    private boolean isPgyRegister = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +98,7 @@ public class MainActivity extends BaseAppCompatActivity
                     .commit();
         }
 
-        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 6000);
+        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 3000);
     }
 
     private void initDrawer() {
@@ -137,7 +135,7 @@ public class MainActivity extends BaseAppCompatActivity
                 return true;
             }
         });
-        TextView versionTextView = mNavView.getHeaderView(0).findViewById(R.id.version_text_view);
+        TextView versionTextView = (TextView) mNavView.getHeaderView(0).findViewById(R.id.version_text_view);
         versionTextView.setText(getString(R.string.version) + ":" + BuildConfig.VERSION_NAME + "-" + BuildConfig.GIT_COMMIT);
     }
 
@@ -146,7 +144,8 @@ public class MainActivity extends BaseAppCompatActivity
         super.onDestroy();
         unbinder.unbind();
         currentFragment = null;
-        PgyUpdateManager.unregister();
+        if (isPgyRegister)
+            PgyUpdateManager.unregister();
     }
 
     @Override
@@ -215,7 +214,7 @@ public class MainActivity extends BaseAppCompatActivity
 
                     @Override
                     public void onUpdateAvailable(String result) {
-                        Log.d("MainActivity", result);
+                        LogUtils.d("MainActivity", result);
                         final AppBean appBean = getAppBeanFromString(result);
 
                         if (Integer.parseInt(appBean.getVersionCode()) >
@@ -228,6 +227,7 @@ public class MainActivity extends BaseAppCompatActivity
                         }
                     }
                 });
+        isPgyRegister = true;
     }
 
     @Override
@@ -241,10 +241,5 @@ public class MainActivity extends BaseAppCompatActivity
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-    }
-
-    @Override
-    public void hasRoot(boolean hasRoot) {
-        mNoSuTextView.setVisibility(hasRoot ? View.INVISIBLE : View.VISIBLE);
     }
 }

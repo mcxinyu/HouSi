@@ -1,7 +1,9 @@
 package io.github.mcxinyu.housi.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -13,16 +15,31 @@ import androidx.appcompat.widget.Toolbar;
  */
 public abstract class ABaseFragment extends Fragment {
 
-    private FragmentCallbacks mCallbacks;
+    private Callbacks mCallbacks;
+
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity instanceof Callbacks) {
+                mCallbacks = (Callbacks) activity;
+            } else {
+                throw new RuntimeException(activity.toString()
+                        + " must implement Callbacks");
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FragmentCallbacks) {
-            mCallbacks = (FragmentCallbacks) context;
+        if (context instanceof Callbacks) {
+            mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement BackHandledInterface");
+                    + " must implement Callbacks");
         }
     }
 
@@ -48,7 +65,7 @@ public abstract class ABaseFragment extends Fragment {
         mCallbacks = null;
     }
 
-    public interface FragmentCallbacks {
+    public interface Callbacks {
         void setDrawerMenuClicked(int item);
 
         void initToolbar(Toolbar toolbar);
