@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:key="parent_screen">
+    <PreferenceScreen
+        android:key="setting_current_source_url"
+        android:title="@string/setting_current_source_url"></PreferenceScreen>
+
+    <PreferenceCategory android:title="@string/setting_this_app">
+        <PreferenceScreen
+            android:key="setting_check_for_update"
+            android:title="@string/setting_check_for_update" />
+        <PreferenceScreen
+            android:key="setting_clean_cache"
+            android:title="@string/setting_clean_cache" />
+        <PreferenceScreen
+            android:selectable="false"
+            android:summary="@string/about_cache" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/support_and_help">
+        <PreferenceScreen
+            android:key="setting_feedback"
+            android:summary="@string/setting_feedback_hint"
+            android:title="@string/action_feedback" />
+        <PreferenceScreen
+            android:key="setting_about"
+            android:summary="没有工作室 No own a house"
+            android:title="@string/setting_others_about" />
+        <PreferenceScreen
+            android:key="setting_faq"
+            android:title="@string/action_faq" />
+    </PreferenceCategory>
+</PreferenceScreen>
