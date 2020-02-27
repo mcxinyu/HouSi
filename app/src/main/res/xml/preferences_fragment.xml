@@ -20,6 +20,9 @@
 
     <PreferenceCategory android:title="@string/support_and_help">
         <PreferenceScreen
+            android:key="setting_faq"
+            android:title="@string/action_faq" />
+        <PreferenceScreen
             android:key="setting_feedback"
             android:summary="@string/setting_feedback_hint"
             android:title="@string/action_feedback" />
@@ -27,8 +30,5 @@
             android:key="setting_about"
             android:summary="没有工作室 No own a house"
             android:title="@string/setting_others_about" />
-        <PreferenceScreen
-            android:key="setting_faq"
-            android:title="@string/action_faq" />
     </PreferenceCategory>
 </PreferenceScreen>

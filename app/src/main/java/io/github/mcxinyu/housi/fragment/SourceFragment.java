@@ -184,7 +184,7 @@ public class SourceFragment extends ABaseFragment {
                         .commit();
             }
             // currentFragment.setUserVisibleHint(false);
-            // fragment.setUserVisibleHint(true);
+            // mFragment.setUserVisibleHint(true);
             currentFragment = fragment;
         }
     }

@@ -10,6 +10,7 @@ import android.os.Message;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -36,13 +37,14 @@ import io.github.mcxinyu.housi.util.QueryPreferences;
  * Contact me : mcxinyu@gmail.com
  */
 public class PreferencesFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+    private static final String TAG = "PreferencesFragment";
 
     private PreferenceScreen mSettingCurrentSourceUrl;
     private PreferenceScreen mSettingCheckForUpdate;
     private PreferenceScreen mSettingCleanCache;
+    private PreferenceScreen mSettingFaq;
     private PreferenceScreen mSettingFeedback;
     private PreferenceScreen mSettingAbout;
-    private PreferenceScreen mSettingFaq;
 
     private boolean isPgyRegister;
 
@@ -87,10 +89,29 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         mSettingCurrentSourceUrl = (PreferenceScreen) findPreference("setting_current_source_url");
         mSettingCheckForUpdate = (PreferenceScreen) findPreference("setting_check_for_update");
         mSettingCleanCache = (PreferenceScreen) findPreference("setting_clean_cache");
+        mSettingFaq = (PreferenceScreen) findPreference("setting_faq");
         mSettingFeedback = (PreferenceScreen) findPreference("setting_feedback");
         mSettingAbout = (PreferenceScreen) findPreference("setting_about");
-        mSettingFaq = (PreferenceScreen) findPreference("setting_faq");
 
+        mSettingCurrentSourceUrl.setOnPreferenceClickListener(this);
+        mSettingCheckForUpdate.setOnPreferenceClickListener(this);
+        mSettingCleanCache.setOnPreferenceClickListener(this);
+        mSettingFaq.setOnPreferenceClickListener(this);
+        mSettingFeedback.setOnPreferenceClickListener(this);
+        mSettingAbout.setOnPreferenceClickListener(this);
+
+        mSettingCheckForUpdate.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
+
+        initSourceUrl();
+        initCache();
+    }
+
+    public void initSourceUrl() {
+        mSettingCurrentSourceUrl.setSummary(getCurrentDownloadUrl());
+    }
+
+    @NonNull
+    private String getCurrentDownloadUrl() {
         String hostsUrl = null;
         int routing = QueryPreferences.getSourceRouting(getActivity());
         switch (routing) {
@@ -108,16 +129,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         if (hostsUrl == null) {
             hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
         }
-
-        mSettingCurrentSourceUrl.setSummary(hostsUrl);
-        mSettingCheckForUpdate.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
-
-        mSettingCheckForUpdate.setOnPreferenceClickListener(this);
-        mSettingCleanCache.setOnPreferenceClickListener(this);
-        mSettingFeedback.setOnPreferenceClickListener(this);
-        mSettingAbout.setOnPreferenceClickListener(this);
-
-        initCache();
+        return hostsUrl;
     }
 
     private void showPgyerDialog() {
@@ -229,21 +241,24 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     }
 
     private void checkForUpdate() {
+        Toast.makeText(getActivity(), getString(R.string.checking_for_update), Toast.LENGTH_SHORT).show();
 
         PgyUpdateManager.register(getActivity(), "io.github.mcxinyu.housi.pgy",
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
-
+                        mSettingCheckForUpdate.setSummary("当前为最新版本：" +
+                                CheckUpdateHelper.getCurrentVersionName(getActivity()));
                     }
 
                     @Override
                     public void onUpdateAvailable(String result) {
-                        LogUtils.d("MainActivity", result);
+                        LogUtils.d(TAG, result);
                         final AppBean appBean = getAppBeanFromString(result);
 
                         if (Integer.parseInt(appBean.getVersionCode()) >
                                 CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
+                            Toast.makeText(getActivity(), getString(R.string.has_new_version), Toast.LENGTH_SHORT).show();
                             mSettingCheckForUpdate.setSummary("最新版本：" +
                                     appBean.getVersionName() + "（当前版本：" +
                                     CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
@@ -253,13 +268,17 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                             } else {
                                 CheckUpdateHelper.buildUpdateDialog(getActivity(), appBean);
                             }
-                        } else {
-                            mSettingCheckForUpdate.setSummary("当前为最新版本：" +
-                                    CheckUpdateHelper.getCurrentVersionName(getActivity()));
                         }
                     }
                 });
         isPgyRegister = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (isPgyRegister)
+            PgyUpdateManager.unregister();
     }
 
     private void copyUrlToClipboard(Preference preference) {
@@ -276,7 +295,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                 .withAboutVersionShown(true)
                 .withActivityColor(new Colors(getResources().getColor(R.color.colorAccent),
                         getResources().getColor(R.color.colorAccent)))
-                .withAboutDescription(getString(R.string.aboutLibraries_description_text))
+                .withAboutSpecial1Description(getString(R.string.aboutLibraries_description_text))
                 .withAboutAppName(getString(R.string.app_name))
                 .withActivityTitle(getString(R.string.about_title))
                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
@@ -296,13 +315,13 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
             case "setting_clean_cache":
                 clearAppCache();
                 return true;
+            case "setting_faq":
+                return true;
             case "setting_feedback":
                 showPgyerDialog();
                 return true;
             case "setting_about":
                 startAboutActivity();
-                return true;
-            case "setting_faq":
                 return true;
         }
         return false;
