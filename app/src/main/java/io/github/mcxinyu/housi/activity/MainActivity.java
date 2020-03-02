@@ -3,16 +3,17 @@ package io.github.mcxinyu.housi.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -133,6 +134,9 @@ public class MainActivity extends BaseAppCompatActivity
                     case R.id.nav_feedback:
                         showPgyerDialog();
                         break;
+                    case R.id.nav_faq:
+                        showFaqTab();
+                        break;
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -142,6 +146,15 @@ public class MainActivity extends BaseAppCompatActivity
         });
         TextView versionTextView = (TextView) mNavView.getHeaderView(0).findViewById(R.id.version_text_view);
         versionTextView.setText(getString(R.string.version) + ":" + BuildConfig.VERSION_NAME + "-" + BuildConfig.GIT_COMMIT);
+    }
+
+    private void showFaqTab() {
+        String faqUrl = BuildConfig.FAQ_URL;
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
+        CustomTabsIntent intent = builder.build();
+        intent.launchUrl(this, Uri.parse(faqUrl));
     }
 
     @Override
@@ -162,23 +175,6 @@ public class MainActivity extends BaseAppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // int id = item.getItemId();
-
-        // if (id == R.id.action_settings) {
-        //     return true;
-        // }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void switchFragment(Fragment fragment) {
