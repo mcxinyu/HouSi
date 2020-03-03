@@ -3,6 +3,7 @@ package io.github.mcxinyu.housi.fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,8 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
+
+import androidx.appcompat.app.AlertDialog;
 import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
@@ -264,11 +267,31 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                                     appBean.getVersionName() + "（当前版本：" +
                                     CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
 
-                            if (appBean.getVersionName().contains("force")) {
-                                CheckUpdateHelper.buildForceUpdateDialog(getActivity(), appBean);
-                            } else {
-                                CheckUpdateHelper.buildUpdateDialog(getActivity(), appBean);
-                            }
+                            // if (appBean.getVersionName().contains("force")) {
+                            //     CheckUpdateHelper.buildForceUpdateDialog(getActivity(), appBean);
+                            // } else {
+                            //     CheckUpdateHelper.buildUpdateDialog(getActivity(), appBean);
+                            // }
+
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle("更新")
+                                    .setMessage(appBean.getReleaseNote())
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            startDownloadTask(getActivity(), appBean.getDownloadURL());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .show();
                         }
                     }
                 });
