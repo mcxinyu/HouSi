@@ -13,14 +13,12 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -99,6 +97,7 @@ public class MainActivity extends BaseAppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar_TransparentStatusBar);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
@@ -184,6 +183,8 @@ public class MainActivity extends BaseAppCompatActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (!(currentFragment instanceof BasicFragment)) {
+            if (mBasicFragment == null)
+                mBasicFragment = BasicFragment.newInstance();
             switchFragment(mBasicFragment);
         } else {
             super.onBackPressed();

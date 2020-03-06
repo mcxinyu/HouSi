@@ -14,7 +14,6 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-
 import androidx.appcompat.app.AlertDialog;
 import android.widget.Toast;
 
