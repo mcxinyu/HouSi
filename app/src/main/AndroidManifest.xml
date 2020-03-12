@@ -45,6 +45,8 @@
 
         </activity>
 
+        <activity android:name="com.pgyersdk.activity.FeedbackActivity" />
+
         <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService" />
 
         <provider

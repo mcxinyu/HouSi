@@ -27,14 +27,14 @@
                     style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     tools:text="中文标题" />
 
                 <Spinner
                     android:id="@+id/toolbar_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:entries="@array/source_routing_entries"
                     android:spinnerMode="dropdown" />
             </RelativeLayout>

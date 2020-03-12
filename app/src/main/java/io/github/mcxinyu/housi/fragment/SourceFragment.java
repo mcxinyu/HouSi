@@ -1,13 +1,15 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import androidx.core.app.Fragment;
+import androidx.core.app.FragmentManager;
+import androidx.core.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,7 +172,7 @@ public class SourceFragment extends ABaseFragment {
 
     }
 
-    private void switchFragment(Fragment fragment) {
+    private void switchFragment(@NonNull Fragment fragment) {
 
         if (currentFragment != fragment) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();

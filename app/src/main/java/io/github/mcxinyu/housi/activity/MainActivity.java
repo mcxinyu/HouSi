@@ -1,11 +1,7 @@
 package io.github.mcxinyu.housi.activity;
 
 import android.Manifest;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,13 +9,15 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
-import androidx.core.app.ActivityCompat;
+
+import androidx.core.app.Fragment;
+import androidx.core.app.FragmentManager;
+import androidx.core.app.FragmentTransaction;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -30,7 +28,8 @@ import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.views.PgyerDialog;
-import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
+import com.tbruyelle.rxpermissions.Permission;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +44,8 @@ import io.github.mcxinyu.housi.fragment.SourceFragment;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
-
-import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
+import io.github.mcxinyu.housi.util.StateUtils;
+import rx.functions.Action1;
 
 /**
  * Created by huangyuefeng on 2017/9/13.
@@ -91,7 +90,6 @@ public class MainActivity extends BaseAppCompatActivity
     private SettingsFragment mSettingsFragment;
 
     private boolean isPgyRegister = false;
-    private UpdateDialog mUpdateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +101,7 @@ public class MainActivity extends BaseAppCompatActivity
 
         initDrawer();
 
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
         currentFragment = mFragmentManager.findFragmentById(R.id.fragment_container);
 
         if (currentFragment == null) {
@@ -164,7 +162,9 @@ public class MainActivity extends BaseAppCompatActivity
         String faqUrl = BuildConfig.FAQ_URL;
 
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
+        builder.setToolbarColor(getResources().getColor(R.color.colorAccent))
+                .setShowTitle(true)
+                .addDefaultShareMenuItem();
         CustomTabsIntent intent = builder.build();
         intent.launchUrl(this, Uri.parse(faqUrl));
     }
@@ -191,7 +191,7 @@ public class MainActivity extends BaseAppCompatActivity
         }
     }
 
-    private void switchFragment(Fragment fragment) {
+    private void switchFragment(@NonNull Fragment fragment) {
 
         if (currentFragment != fragment) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -247,8 +247,36 @@ public class MainActivity extends BaseAppCompatActivity
                                     .setPositiveButton("下载", new DialogInterface.OnClickListener() {
 
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            startDownloadTask(MainActivity.this, appBean.getDownloadURL());
+                                        public void onClick(final DialogInterface dialog, int which) {
+                                            RxPermissions rxPermissions = new RxPermissions(MainActivity.this);
+                                            rxPermissions.requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                    .subscribe(new Action1<Permission>() {
+                                                        @Override
+                                                        public void call(Permission permission) {
+                                                            if (permission.granted) {
+                                                                if (permission.name.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                                                    if (!StateUtils.isNetworkAvailable(MainActivity.this)) {
+                                                                        Toast.makeText(MainActivity.this,
+                                                                                getString(R.string.network_is_not_available),
+                                                                                Toast.LENGTH_SHORT).show();
+                                                                    } else {
+                                                                        startDownloadTask(MainActivity.this, appBean.getDownloadURL());
+                                                                    }
+                                                                }
+                                                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                                                // 用户拒绝了权限申请
+                                                                Toast.makeText(MainActivity.this,
+                                                                        getString(R.string.need_storage),
+                                                                        Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                // 用户拒绝，并且选择不再提示
+                                                                // 可以引导用户进入权限设置界面开启权限
+                                                                Toast.makeText(MainActivity.this,
+                                                                        getString(R.string.need_storage),
+                                                                        Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
                                             dialog.dismiss();
                                         }
                                     })
@@ -257,29 +285,6 @@ public class MainActivity extends BaseAppCompatActivity
                     }
                 });
         isPgyRegister = true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        //如果用户同意所请求的权限
-        if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            //所以在进行判断时,必须要结合这两个常量进行判断.
-            if (requestCode == UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
-                //进行下载操作
-                mUpdateDialog.download();
-            }
-        } else {
-            //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
-            Toast.makeText(this, "程序将无法正常运行", Toast.LENGTH_SHORT).show();
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Log.e(TAG, "false.请开启读写sd卡权限,不然无法正常工作");
-            } else {
-                Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
-            }
-        }
     }
 
     @Override
