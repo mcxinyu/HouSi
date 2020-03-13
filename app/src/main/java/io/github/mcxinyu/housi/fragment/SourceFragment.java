@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import androidx.core.app.Fragment;
 import androidx.core.app.FragmentManager;
 import androidx.core.app.FragmentTransaction;

@@ -47,6 +47,7 @@
     <string name="clipboard_hint">已复制到剪切板</string>
     <string name="source_diy_note">右上角切换来源会改变“基本”页的来源获取方式。\n自定义来源地址后，返回“基本”页进行更新。</string>
     <string name="source_diy_download_url_hint">点击设置自定义来源地址</string>
+    <string name="malformed_url_exception">url 格式错误</string>
     <string name="source_file_path">选择文件</string>
     <string name="source_file_path_hint">点击来选择一个文件</string>
     <string name="source_file_note">请自行确保文件是正确格式的 hosts 文件。\n选好文件后会直接应用该 hosts 文件。</string>
@@ -59,15 +60,28 @@
     <string name="setting_clean_cache">清理缓存</string>
     <string name="about_cache">缓存文件大部分是下载的 hosts 源文件。</string>
     <string name="setting_others_about">关于</string>
-    <string name="action_faq">问题与帮助</string>
+    <string name="action_faq">使用说明书</string>
     <string name="setting_feedback_hint">意见、建议、有可靠的 hosts 源都可以反馈给我。</string>
     <string name="setting_current_source_url">当前 hosts 源地址</string>
     <string name="clean_cache_up">清理完成</string>
     <string name="clean_cache_fail">清理失败</string>
     <string name="about_title">关于</string>
-    <string name="aboutLibraries_description_text">『后司』是一个可以简单修改 hosts 的应用，本应用与其代码由 <a href="https://github.com/mcxinyu">@mcxinyu</a> 创作或维护。它是一个免费应用，使用它不收取您任何费用。其中的所有 hosts 内容均来自网络（Internet）并由其他项目组织者维护。\n本应用使用了包括但不仅限于以下开源库。</string>
+    <string name="aboutLibraries_description_text">『后司』是一个可以简单修改 hosts 的应用，本应用与其代码由 <a href="https://github.com/mcxinyu">@mcxinyu</a> 创作或维护。它是一个免费应用，使用它不收取您任何费用。其中的所有 hosts 内容均来自网络（Internet）并由其他项目组织者维护。</string>
+    <string name="ope_source_library_declaration">本应用使用了包括但不仅限于以下开源库。</string>
     <string name="checking_for_update">正在检查更新</string>
     <string name="has_new_version">有新版本啦，请尽快更新！</string>
     <string name="network_is_not_available">网络不可用</string>
     <string name="need_storage">需要存储权限来下载更新应用</string>
+
+    <string name="setting_service">通知服务</string>
+    <string name="open_service">开启服务</string>
+    <string name="service_start_time">通知时间</string>
+    <string name="service_start_time_hint">10:00</string>
+    <string name="about_service">开启服务后，不同手机厂家在系统资源不足时（包括安装了安全类 app 时）可能会清理或强制关闭后司应用服务，如出现该情况，请手动将后司应用服务加入白名单。</string>
+    <string name="setting_alarm_repeat">重复</string>
+    <string name="setting_alarm_repeat_hint">仅一次</string>
+    <string name="version">Version</string>
+    <string name="author_info">© 2017 mcxinyu</string>
+    <string name="about_app">关于本应用</string>
+    <string name="action_faq_hint">请仔细阅读说明书</string>
 </resources>

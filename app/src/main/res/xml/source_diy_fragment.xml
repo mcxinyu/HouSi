@@ -4,9 +4,10 @@
     <PreferenceCategory android:title="@string/source_detail">
         <EditTextPreference
             android:dialogTitle="@string/source_download_url"
+            android:inputType="textUri"
             android:key="source_diy_download_url"
-            android:title="@string/source_download_url"
-            android:summary="@string/source_diy_download_url_hint" />
+            android:summary="@string/source_diy_download_url_hint"
+            android:title="@string/source_download_url" />
         <PreferenceScreen
             android:selectable="false"
             android:summary="@string/source_diy_note" />

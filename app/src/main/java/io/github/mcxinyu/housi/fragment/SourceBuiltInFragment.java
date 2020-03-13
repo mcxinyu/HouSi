@@ -5,12 +5,13 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
+import android.support.annotation.Nullable;
 import androidx.appcompat.preference.ListPreference;
 import androidx.appcompat.preference.Preference;
-import androidx.appcompat.preference.PreferenceFragmentCompat;
 import androidx.appcompat.preference.PreferenceScreen;
 import android.widget.Toast;
+
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.api.SourceApiHelper;
@@ -42,7 +43,7 @@ public class SourceBuiltInFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.source_built_in_fragment);
         initPreferences();
     }
@@ -104,7 +105,7 @@ public class SourceBuiltInFragment extends PreferenceFragmentCompat {
         mSourceBuiltInList.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                mSourceBuiltInList.setSummary(mSourceConfig.getNameArray()[Integer.parseInt((String) o)]);
+                preference.setSummary(mSourceConfig.getNameArray()[Integer.parseInt((String) o)]);
                 QueryPreferences.setSourceBuiltInDownloadUrl(getContext(),
                         mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());
                 mSourceBuiltInDownloadUrl.setSummary(mSourceConfig.getResult().get(Integer.parseInt((String) o)).getUrl());

@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
-
 import androidx.core.app.Fragment;
 import androidx.core.app.FragmentManager;
 import androidx.core.app.FragmentTransaction;
