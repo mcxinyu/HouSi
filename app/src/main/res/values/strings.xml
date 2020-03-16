@@ -74,7 +74,7 @@
     <string name="need_storage">需要存储权限来下载更新应用</string>
 
     <string name="setting_service">通知服务</string>
-    <string name="open_service">开启服务</string>
+    <string name="open_service">开启通知服务</string>
     <string name="service_start_time">通知时间</string>
     <string name="service_start_time_hint">10:00</string>
     <string name="about_service">开启服务后，不同手机厂家在系统资源不足时（包括安装了安全类 app 时）可能会清理或强制关闭后司应用服务，如出现该情况，请手动将后司应用服务加入白名单。</string>
@@ -84,4 +84,5 @@
     <string name="author_info">© 2017 mcxinyu</string>
     <string name="about_app">关于本应用</string>
     <string name="action_faq_hint">请仔细阅读说明书</string>
+    <string name="setting_switch_hint">按时提醒你更新 hosts</string>
 </resources>

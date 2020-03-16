@@ -80,6 +80,9 @@ public class SettingsFragment extends ABaseFragment {
         super.onHiddenChanged(hidden);
         if (!hidden) {
             ((PreferencesFragment) mFragment).initSourceUrl();
+            ((PreferencesFragment) mFragment).initCache();
+        } else {
+            ((PreferencesFragment) mFragment).setAlarm();
         }
     }
 }

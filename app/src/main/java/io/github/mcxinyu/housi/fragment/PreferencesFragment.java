@@ -1,6 +1,7 @@
 package io.github.mcxinyu.housi.fragment;
 
 import android.Manifest;
+import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,10 +13,13 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v14.preference.SwitchPreference;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.preference.ListPreference;
 import androidx.appcompat.preference.Preference;
 import androidx.appcompat.preference.PreferenceScreen;
+
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
@@ -32,10 +36,13 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import io.github.mcxinyu.housi.BuildConfig;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.activity.AboutActivity;
+import io.github.mcxinyu.housi.services.AlarmService;
 import io.github.mcxinyu.housi.util.CheckUpdateHelper;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -50,14 +57,20 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceClickListener {
     private static final String TAG = "PreferencesFragment";
 
+    private static final SimpleDateFormat SERVICE_START_TIME_FORMAT = new SimpleDateFormat("HH:mm");
+    private static final int REQUEST_CODE_ALARM = 1024;
+
     private PreferenceScreen mSettingCurrentSourceUrl;
-    private ListPreference mSettingAlarmRepeat;
+    private SwitchPreference mSettingSwitchAlarmService;
     private PreferenceScreen mSettingServiceStartTime;
+    private ListPreference mSettingAlarmRepeat;
+    private PreferenceScreen mSettingAboutService;
     private PreferenceScreen mSettingCheckForUpdate;
     private PreferenceScreen mSettingCleanCache;
     private PreferenceScreen mSettingFaq;
     private PreferenceScreen mSettingFeedback;
     private PreferenceScreen mSettingAbout;
+    private PreferenceScreen mSettingAboutCache;
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -97,31 +110,92 @@ public class PreferencesFragment extends PreferenceFragmentCompat
 
     private void initPreferences() {
         mSettingCurrentSourceUrl = (PreferenceScreen) findPreference("setting_current_source_url");
-        mSettingAlarmRepeat = (ListPreference) findPreference("setting_alarm_repeat");
+        mSettingSwitchAlarmService = (SwitchPreference) findPreference("setting_switch_alarm_service");
         mSettingServiceStartTime = (PreferenceScreen) findPreference("setting_service_start_time");
+        mSettingAlarmRepeat = (ListPreference) findPreference("setting_alarm_repeat");
+        mSettingAboutService = (PreferenceScreen) findPreference("setting_about_service");
         mSettingCheckForUpdate = (PreferenceScreen) findPreference("setting_check_for_update");
         mSettingCleanCache = (PreferenceScreen) findPreference("setting_clean_cache");
         mSettingFaq = (PreferenceScreen) findPreference("setting_faq");
         mSettingFeedback = (PreferenceScreen) findPreference("setting_feedback");
         mSettingAbout = (PreferenceScreen) findPreference("setting_about");
+        mSettingAboutCache = (PreferenceScreen) findPreference("setting_about_cache");
 
         mSettingCurrentSourceUrl.setOnPreferenceClickListener(this);
+        mSettingServiceStartTime.setOnPreferenceClickListener(this);
         mSettingCheckForUpdate.setOnPreferenceClickListener(this);
         mSettingCleanCache.setOnPreferenceClickListener(this);
         mSettingFaq.setOnPreferenceClickListener(this);
         mSettingFeedback.setOnPreferenceClickListener(this);
         mSettingAbout.setOnPreferenceClickListener(this);
 
-        mSettingCheckForUpdate.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
-
         initSourceUrl();
-        initServiceStartTime();
-        initAlarmRepeat();
+        initSwitchAlarmService();
+        initVersionInfo();
         initCache();
     }
 
-    private void initServiceStartTime() {
-        // TODO: 2017/9/25
+    public void initSourceUrl() {
+        mSettingCurrentSourceUrl.setSummary(getCurrentDownloadUrl());
+    }
+
+    @NonNull
+    private String getCurrentDownloadUrl() {
+        String hostsUrl = null;
+        int routing = QueryPreferences.getSourceRouting(getActivity());
+        switch (routing) {
+            case 0:
+                hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                break;
+            case 1:
+                hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
+                if (hostsUrl == null) {
+                    hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
+                }
+                break;
+        }
+
+        if (hostsUrl == null) {
+            hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
+        }
+        return hostsUrl;
+    }
+
+    private void initSwitchAlarmService() {
+        if (mSettingSwitchAlarmService.isChecked()) {
+            mSettingAboutService.setVisible(true);
+            mSettingServiceStartTime.setVisible(true);
+            mSettingAlarmRepeat.setVisible(true);
+        } else {
+            mSettingAboutService.setVisible(false);
+            mSettingServiceStartTime.setVisible(false);
+            mSettingAlarmRepeat.setVisible(false);
+        }
+
+        mSettingSwitchAlarmService.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                mSettingSwitchAlarmService.setChecked((Boolean) newValue);
+
+                mSettingAboutService.setVisible((Boolean) newValue);
+                mSettingServiceStartTime.setVisible((Boolean) newValue);
+                mSettingAlarmRepeat.setVisible((Boolean) newValue);
+                return true;
+            }
+        });
+
+        initServiceAlarmTime();
+        initAlarmRepeat();
+    }
+
+    private void initServiceAlarmTime() {
+        final Calendar calendar = Calendar.getInstance();
+
+        String startTime = QueryPreferences.getSettingServiceStartTime(getContext());
+        if (startTime != null) {
+            calendar.setTimeInMillis(Long.parseLong(startTime));
+        }
+        mSettingServiceStartTime.setSummary(SERVICE_START_TIME_FORMAT.format(calendar.getTime()));
     }
 
     private void initAlarmRepeat() {
@@ -159,30 +233,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         }
     }
 
-    public void initSourceUrl() {
-        mSettingCurrentSourceUrl.setSummary(getCurrentDownloadUrl());
-    }
-
-    @NonNull
-    private String getCurrentDownloadUrl() {
-        String hostsUrl = null;
-        int routing = QueryPreferences.getSourceRouting(getActivity());
-        switch (routing) {
-            case 0:
-                hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
-                break;
-            case 1:
-                hostsUrl = QueryPreferences.getSourceDiyDownloadUrl(getActivity());
-                if (hostsUrl == null) {
-                    hostsUrl = QueryPreferences.getSourceBuiltInDownloadUrl(getActivity());
-                }
-                break;
-        }
-
-        if (hostsUrl == null) {
-            hostsUrl = BuildConfig.DEFAULT_HOSTS_URL;
-        }
-        return hostsUrl;
+    private void initVersionInfo() {
+        mSettingCheckForUpdate.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
     }
 
     private void showPgyerDialog() {
@@ -190,7 +242,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         PgyFeedback.getInstance().showDialog(getActivity());
     }
 
-    private void initCache() {
+    public void initCache() {
+        mSettingAboutCache.setVisible(false);
         new Thread() {
             public void run() {
                 Message msg = new Message();
@@ -204,23 +257,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat
                 handler.sendMessage(msg);
             }
         }.start();
-    }
-
-    private String formatFileSize(long fileS) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String fileSizeString;
-        if (fileS == 0) {
-            fileSizeString = "0MB";
-        } else if (fileS < 1024) {
-            fileSizeString = df.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "KB";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "MB";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
-        }
-        return fileSizeString;
     }
 
     private long getCacheSize() {
@@ -248,6 +284,25 @@ public class PreferencesFragment extends PreferenceFragmentCompat
             e.printStackTrace();
         }
         return size;
+    }
+
+    private String formatFileSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString;
+        if (fileS == 0) {
+            mSettingAboutCache.setVisible(false);
+            return "0MB";
+        } else if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
+        }
+        mSettingAboutCache.setVisible(true);
+        return fileSizeString;
     }
 
     private void clearAppCache() {
@@ -372,8 +427,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         ClipboardManager clipboardManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newRawUri(preference.getSummary(),
                 Uri.parse(preference.getSummary().toString()));
-        clipboardManager.setPrimaryClip(clipData);
-        Toast.makeText(getContext(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
+        if (clipboardManager != null) {
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(getContext(), getString(R.string.clipboard_hint), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startAboutActivity() {
@@ -400,12 +457,45 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         intent.launchUrl(getContext(), Uri.parse(faqUrl));
     }
 
+    private void showTimePicker() {
+        final Calendar calendar = Calendar.getInstance();
+
+        String startTime = QueryPreferences.getSettingServiceStartTime(getContext());
+        if (startTime != null) {
+            calendar.setTimeInMillis(Long.parseLong(startTime));
+        }
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+
+                        QueryPreferences.setSettingServiceStartTime(getContext(), calendar.getTimeInMillis() + "");
+                        mSettingServiceStartTime.setSummary(SERVICE_START_TIME_FORMAT.format(calendar.getTime()));
+                    }
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true);
+        timePickerDialog.setTitle("设置时间");
+        timePickerDialog.show();
+    }
+
+    public void setAlarm() {
+        getContext().startService(AlarmService.newIntent(getContext(), false));
+    }
+
     @Override
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
         switch (key) {
             case "setting_current_source_url":
                 copyUrlToClipboard(preference);
+                return true;
+            case "setting_service_start_time":
+                showTimePicker();
                 return true;
             case "setting_check_for_update":
                 checkForUpdate();

@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-
 import androidx.core.content.ContextCompat;
 
 import com.danielstone.materialaboutlibrary.ConvenienceBuilder;
@@ -96,7 +95,6 @@ public class AboutActivity extends MaterialAboutActivity {
                                 .withActivityColor(new Colors(getResources().getColor(R.color.colorAccent),
                                         getResources().getColor(R.color.colorAccent)))
                                 .withActivityTitle("Licenses")
-                                .withAboutSpecial1Description(getString(R.string.ope_source_library_declaration))
                                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                                 .start(context);
                     }
