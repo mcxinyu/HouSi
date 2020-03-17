@@ -18,7 +18,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.preference.ListPreference;
 import androidx.appcompat.preference.Preference;
 import androidx.appcompat.preference.PreferenceScreen;
-
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -195,6 +194,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat
         if (startTime != null) {
             calendar.setTimeInMillis(Long.parseLong(startTime));
         }
+        QueryPreferences.setSettingServiceStartTime(getContext(), calendar.getTimeInMillis() + "");
         mSettingServiceStartTime.setSummary(SERVICE_START_TIME_FORMAT.format(calendar.getTime()));
     }
 
