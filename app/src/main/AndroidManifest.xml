@@ -51,17 +51,6 @@
 
         <service android:name=".services.AlarmService" />
 
-        <service android:name=".services.FCMMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".services.FCMInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
         <receiver
             android:name=".receiver.AlarmReceiver"
             android:process=":remote" />
