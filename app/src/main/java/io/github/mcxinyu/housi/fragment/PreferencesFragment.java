@@ -357,6 +357,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat
                     public void onNoUpdateAvailable() {
                         mSettingCheckForUpdate.setSummary("当前为最新版本：" +
                                 CheckUpdateHelper.getCurrentVersionName(getContext()));
+                        PgyUpdateManager.unregister();
                     }
 
                     @Override
@@ -419,6 +420,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat
                                     })
                                     .show();
                         }
+                        PgyUpdateManager.unregister();
                     }
                 });
     }

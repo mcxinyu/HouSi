@@ -88,8 +88,6 @@ public class MainActivity extends BaseAppCompatActivity
     private SourceFragment mSourceFragment;
     private SettingsFragment mSettingsFragment;
 
-    private boolean isPgyRegister = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar_TransparentStatusBar);
@@ -173,8 +171,6 @@ public class MainActivity extends BaseAppCompatActivity
         super.onDestroy();
         unbinder.unbind();
         currentFragment = null;
-        if (isPgyRegister)
-            PgyUpdateManager.unregister();
     }
 
     @Override
@@ -223,7 +219,7 @@ public class MainActivity extends BaseAppCompatActivity
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
-
+                        PgyUpdateManager.unregister();
                     }
 
                     @Override
@@ -281,9 +277,9 @@ public class MainActivity extends BaseAppCompatActivity
                                     })
                                     .show();
                         }
+                        PgyUpdateManager.unregister();
                     }
                 });
-        isPgyRegister = true;
     }
 
     @Override
