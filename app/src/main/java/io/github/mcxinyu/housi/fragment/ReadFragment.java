@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -81,23 +80,6 @@ public class ReadFragment extends ABaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mWebView != null) {
-            ViewParent parent = mWebView.getParent();
-            if (parent != null) {
-                ((ViewGroup) parent).removeView(mWebView);
-            }
-            mWebView.stopLoading();
-            mWebView.getSettings().setJavaScriptEnabled(false);
-            mWebView.clearHistory();
-            mWebView.clearView();
-            mWebView.removeAllViews();
-
-            try {
-                mWebView.destroy();
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            }
-        }
         unbinder.unbind();
     }
 
