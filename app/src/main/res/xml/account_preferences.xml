@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<PreferenceCategory-->
+    <!--android:title="账户">-->
+    <!--<PreferenceScreen-->
+    <!--android:key="ano_key"-->
+    <!--android:summary="同步已经"-->
+    <!--android:title="同步已经">-->
+    <!--</PreferenceScreen>-->
+    <!--</PreferenceCategory>-->
+</PreferenceScreen>

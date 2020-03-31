@@ -19,8 +19,6 @@ public class QueryPreferences {
     private static final String SETTING_SERVICE_START_TIME = "setting_service_start_time";
     private static final String SETTING_ALARM_REPEAT = "setting_alarm_repeat";
 
-    private static final String USE_FIREBASE_CLOUD_MESSAGE = "use_firebase_cloud_message";
-
     public static boolean getDrawerOpenState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(IS_DRAWER_OPENED, false);
@@ -82,17 +80,5 @@ public class QueryPreferences {
     public static String getSettingAlarmRepeat(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SETTING_ALARM_REPEAT, null);
-    }
-
-    public static boolean getUseFirebaseCloudMessage(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(USE_FIREBASE_CLOUD_MESSAGE, false);
-    }
-
-    public static void setUseFirebaseCloudMessage(Context context, boolean enable) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(USE_FIREBASE_CLOUD_MESSAGE, enable)
-                .apply();
     }
 }
