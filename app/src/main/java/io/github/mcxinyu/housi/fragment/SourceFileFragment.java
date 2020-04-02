@@ -9,12 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import androidx.appcompat.preference.Preference;
-import androidx.appcompat.preference.PreferenceScreen;
 import android.widget.Toast;
-
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,12 +18,15 @@ import eu.chainfire.libsuperuser.Shell;
 import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.StaticValues;
+import moe.shizuku.preference.Preference;
+import moe.shizuku.preference.PreferenceFragment;
+import moe.shizuku.preference.PreferenceScreen;
 
 /**
  * Created by huangyuefeng on 2017/9/17.
  * Contact me : mcxinyu@gmail.com
  */
-public class SourceFileFragment extends PreferenceFragmentCompat {
+public class SourceFileFragment extends PreferenceFragment {
     private static final String TAG = "SourceFileFragment";
 
     private static final int SELECT_FILE_REQUEST_CODE = 1024;
@@ -72,7 +70,7 @@ public class SourceFileFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.source_file_fragment);
         initPreferences();
     }

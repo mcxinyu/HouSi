@@ -1,19 +1,14 @@
 package io.github.mcxinyu.housi.services;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import java.util.Calendar;
 
-import io.github.mcxinyu.housi.R;
 import io.github.mcxinyu.housi.receiver.AlarmReceiver;
 import io.github.mcxinyu.housi.util.LogUtils;
 import io.github.mcxinyu.housi.util.QueryPreferences;
@@ -190,26 +185,6 @@ public class AlarmService extends IntentService {
                 }
                 LogUtils.d(TAG, "set alarm success : " + repeat + " : " + calendarStartTime.getTime().toString());
                 break;
-        }
-        addAccount();
-    }
-
-    private static final String ACCOUNT_TYPE = "io.github.mcxinyu.housi.account.anonymous";
-
-    private void addAccount() {
-        AccountManager accountManager = (AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE);
-        Account account = null;
-        Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
-        if (accounts.length > 0) {
-            account = accounts[0];
-        } else {
-            account = new Account(getString(R.string.account_name), ACCOUNT_TYPE);
-        }
-
-        if (accountManager.addAccountExplicitly(account, null, null)) {
-            ContentResolver.setIsSyncable(account, "io.mcxinyu.github", 1);
-            ContentResolver.setSyncAutomatically(account, "io.mcxinyu.github", true);
-            ContentResolver.addPeriodicSync(account, "io.mcxinyu.github", new Bundle(), 60 * 60);
         }
     }
 }

@@ -90,4 +90,12 @@ public class SourceConfig {
         }
         return valueArray;
     }
+
+    public String[] getUrlArray() {
+        String[] urlArray = new String[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            urlArray[i] = result.get(i).getUrl();
+        }
+        return urlArray;
+    }
 }

@@ -2,9 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:key="parent_screen">
-    <PreferenceScreen
-        android:key="setting_current_source_url"
-        android:title="@string/setting_current_source_url"></PreferenceScreen>
+    <SimpleMenuPreference
+        android:dialogTitle="@string/source_download_url"
+        android:key="setting_current_source_url_multi"
+        android:selectable="false"
+        android:textIsSelectable="true"
+        android:title="@string/setting_current_source_url"
+        android:summary="@string/current_has_multi_sources" />
 
     <PreferenceCategory android:title="@string/setting_service">
         <SwitchPreference

@@ -6,12 +6,12 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="PreferenceFixTheme.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="preferenceCategory_marginBottom">0dp</item>
+        <item name="preferenceTheme">@style/PreferenceTheme</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -31,4 +31,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
+        <!-- Only need this on pre-Lollipop -->
+        <item name="accentColorCompat">?colorAccent</item>
+
+        <item name="simpleMenuPreferenceStyle">@style/Preference.SimpleMenuPreference</item>
+        <!--<item name="simpleMenuPreferenceStyle">@style/simpleMenuPreferenceStylePerfect</item>-->
+        <!--<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat</item>-->
+    </style>
+
+    <style name="simpleMenuPreferenceStylePerfect" parent="@style/Preference.SimpleMenuPreference.Popup">
+        <item name="listElevation">2dp</item>
+        <item name="dialogElevation">2dp</item>
+    </style>
 </resources>
