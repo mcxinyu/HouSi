@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class SourceApiHelper {
                         FileOutputStream fos = null;
 
                         File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
-                                File.separator + source + StaticValues.HOSTS_FILE_NAME);
+                                File.separator + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
                         try {
                             is = responseBody.byteStream();
                             fos = new FileOutputStream(sourceHostFile);
@@ -86,7 +87,7 @@ public class SourceApiHelper {
                     @Override
                     public Observable<File> call(List<File> files) {
                         final File sourceHostFile = new File(context.getCacheDir().getAbsolutePath() +
-                                File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME);
+                                File.separator + "merge-" + StaticValues.HOSTS_FILE_NAME + (new Date()).getTime());
                         return Observable.just(mergeFiles(sourceHostFile, files));
                     }
                 });

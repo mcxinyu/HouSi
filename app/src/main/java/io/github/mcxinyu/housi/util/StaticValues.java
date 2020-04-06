@@ -1,7 +1,5 @@
 package io.github.mcxinyu.housi.util;
 
-import java.util.Date;
-
 /**
  * Created by huangyuefeng on 2017/9/15.
  * Contact me : mcxinyu@gmail.com
@@ -13,5 +11,5 @@ public class StaticValues {
     public static final String EMPTY_HOSTS_NAME = "empty_hosts";
     public static final String EMPTY_HOSTS_VALUE = "127.0.0.1\tlocalhost\n" + "::1\tlocalhost\n" +
             "::1\tip6-localhost\n" + "::1\tip6-loopback";
-    public static final String HOSTS_FILE_NAME = "hosts" + (new Date()).getTime();
+    public static final String HOSTS_FILE_NAME = "hosts";
 }
