@@ -91,4 +91,5 @@
     <string name="current_diy_sources">已自定义了 %1$d 条 hosts 源，点击查看</string>
     <string name="checking_for_su">检查 root 权限</string>
     <string name="account_name">anonymous</string>
+    <string name="please_grant_permission">请授予相应权限</string>
 </resources>

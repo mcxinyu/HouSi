@@ -275,8 +275,21 @@ public class PreferencesFragment extends PreferenceFragment
     }
 
     private void showPgyerDialog() {
-        PgyerDialog.setDialogTitleBackgroundColor("#FF4081");
-        PgyFeedback.getInstance().showDialog(getActivity());
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            PgyerDialog.setDialogTitleBackgroundColor("#FF4081");
+                            PgyFeedback.getInstance().showDialog(getActivity());
+                        } else {
+                            Toast.makeText(getActivity(),
+                                    getString(R.string.please_grant_permission), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void initCache() {

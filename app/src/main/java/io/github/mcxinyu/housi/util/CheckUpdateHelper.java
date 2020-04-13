@@ -1,18 +1,8 @@
 package io.github.mcxinyu.housi.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import androidx.core.app.Fragment;
-
-import com.pgyersdk.javabean.AppBean;
-import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
-import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
-
-import io.github.mcxinyu.housi.R;
 
 /**
  * Created by huangyuefeng on 2017/5/8.
@@ -20,9 +10,8 @@ import io.github.mcxinyu.housi.R;
  */
 public class CheckUpdateHelper {
 
-    /**
-     * 强制更新
-     */
+    /*
+    //强制更新
     private static ForceUpdateDialog buildForceUpdateDialog(Activity activity,
                                                             @Nullable android.app.Fragment fragment,
                                                             @Nullable Fragment compatFragment,
@@ -60,9 +49,7 @@ public class CheckUpdateHelper {
         return buildForceUpdateDialog(activity, null, null, versionInfo);
     }
 
-    /**
-     * 非强制更新
-     */
+    //非强制更新
     private static UpdateDialog buildUpdateDialog(Activity activity,
                                                   @Nullable android.app.Fragment fragment,
                                                   @Nullable Fragment compatFragment,
@@ -102,6 +89,7 @@ public class CheckUpdateHelper {
     public static UpdateDialog buildUpdateDialog(Activity activity, AppBean versionInfo) {
         return buildUpdateDialog(activity, null, null, versionInfo);
     }
+    */
 
     /**
      * 获取当前应用版本号

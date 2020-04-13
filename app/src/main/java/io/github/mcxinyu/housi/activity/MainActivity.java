@@ -209,8 +209,21 @@ public class MainActivity extends BaseAppCompatActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START, false);
         }
-        PgyerDialog.setDialogTitleBackgroundColor("#FF4081");
-        PgyFeedback.getInstance().showDialog(this);
+        RxPermissions rxPermissions = new RxPermissions(MainActivity.this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            PgyerDialog.setDialogTitleBackgroundColor("#FF4081");
+                            PgyFeedback.getInstance().showDialog(MainActivity.this);
+                        } else {
+                            Toast.makeText(MainActivity.this,
+                                    getString(R.string.please_grant_permission), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void checkForUpdate() {
@@ -255,7 +268,8 @@ public class MainActivity extends BaseAppCompatActivity
                                                                                 getString(R.string.network_is_not_available),
                                                                                 Toast.LENGTH_SHORT).show();
                                                                     } else {
-                                                                        startDownloadTask(MainActivity.this, appBean.getDownloadURL());
+                                                                        startDownloadTask(MainActivity.this,
+                                                                                appBean.getDownloadURL());
                                                                     }
                                                                 }
                                                             } else if (permission.shouldShowRequestPermissionRationale) {
