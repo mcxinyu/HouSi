@@ -87,9 +87,10 @@
     <string name="action_faq_hint">请仔细阅读说明书</string>
     <string name="setting_switch_hint">按时提醒你更新 hosts</string>
     <string name="selected_sources">已选择 %1$d 条 hosts 源</string>
-    <string name="current_has_multi_sources">已设置合并 %1$d 条 hosts 源，点击查看</string>
+    <string name="current_has_multi_sources">已设置 %1$d 条 hosts 源，点击查看</string>
     <string name="current_diy_sources">已自定义了 %1$d 条 hosts 源，点击查看</string>
     <string name="checking_for_su">检查 root 权限</string>
     <string name="account_name">anonymous</string>
     <string name="please_grant_permission">请授予相应权限</string>
+    <string name="doing_debug">进入调试状态</string>
 </resources>
