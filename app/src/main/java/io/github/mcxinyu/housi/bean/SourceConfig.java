@@ -49,6 +49,8 @@ public class SourceConfig {
         private String url;
         @SerializedName("value")
         private String value;
+        @SerializedName("repos")
+        private String repos;
 
         public String getName() {
             return name;
@@ -72,6 +74,14 @@ public class SourceConfig {
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public String getRepos() {
+            return repos;
+        }
+
+        public void setRepos(String repos) {
+            this.repos = repos;
         }
     }
 
