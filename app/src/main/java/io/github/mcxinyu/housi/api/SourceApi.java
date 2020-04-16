@@ -1,5 +1,8 @@
 package io.github.mcxinyu.housi.api;
 
+import java.util.List;
+
+import io.github.mcxinyu.housi.bean.GitRepos;
 import io.github.mcxinyu.housi.bean.SourceConfig;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
@@ -18,4 +21,7 @@ public interface SourceApi {
 
     @GET
     Observable<ResponseBody> getSourceHosts(@Url String source);
+
+    @GET
+    Observable<List<GitRepos>> getSourceUpdateDate(@Url String repos);
 }
