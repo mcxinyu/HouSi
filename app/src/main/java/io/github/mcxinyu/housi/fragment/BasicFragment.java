@@ -256,22 +256,26 @@ public class BasicFragment extends ABaseFragment {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         dialog.dismiss();
-                        Snackbar.make(mParentView, StateUtils.handleException(e), Snackbar.LENGTH_SHORT).show();
+                        if (!isDetached()) {
+                            Snackbar.make(mParentView, StateUtils.handleException(e), Snackbar.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        switch (integer) {
-                            case -2:
-                            case -1:
-                                Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
-                                break;
-                            case 0:
-                                Snackbar.make(mParentView, getString(R.string.update_hosts_success), Snackbar.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                Snackbar.make(mParentView, getString(R.string.update_hosts_failure), Snackbar.LENGTH_SHORT).show();
-                                break;
+                        if (!isDetached()) {
+                            switch (integer) {
+                                case -2:
+                                case -1:
+                                    Snackbar.make(mParentView, getString(R.string.no_su), Snackbar.LENGTH_SHORT).show();
+                                    break;
+                                case 0:
+                                    Snackbar.make(mParentView, getString(R.string.update_hosts_success), Snackbar.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Snackbar.make(mParentView, getString(R.string.update_hosts_failure), Snackbar.LENGTH_SHORT).show();
+                                    break;
+                            }
                         }
                     }
                 });
