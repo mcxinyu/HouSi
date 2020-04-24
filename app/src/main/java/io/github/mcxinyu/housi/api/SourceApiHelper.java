@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +28,7 @@ import rx.functions.Func1;
  * Contact me : mcxinyu@foxmail.com
  */
 public class SourceApiHelper {
+    private static final String TAG = SourceApiHelper.class.getSimpleName();
 
     private static final SourceApi SOURCE_API = ApiFactory.getSourceApi();
 
@@ -110,7 +113,20 @@ public class SourceApiHelper {
                         if (gitRepos == null || gitRepos.size() == 0) {
                             return "n/a";
                         }
-                        return gitRepos.get(0).getCommit().getCommitter().getDate();
+                        SimpleDateFormat simpleDateFormatInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                        SimpleDateFormat simpleDateFormatResult = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        try {
+                            return simpleDateFormatResult
+                                    .format(simpleDateFormatInput
+                                            .parse(gitRepos.get(0)
+                                                    .getCommit()
+                                                    .getCommitter()
+                                                    .getDate()
+                                                    .replace("Z", "UTC")));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return "n/a";
+                        }
                     }
                 });
     }
