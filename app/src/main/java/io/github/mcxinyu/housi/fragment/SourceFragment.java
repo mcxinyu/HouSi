@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import androidx.core.app.Fragment;
 import androidx.core.app.FragmentManager;
 import androidx.core.app.FragmentTransaction;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -34,7 +34,7 @@ public class SourceFragment extends ABaseFragment {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
     @BindView(R.id.toolbar_spinner)
-    Spinner mToolbarSpinner;
+    AppCompatSpinner mToolbarSpinner;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fragment_container)
@@ -126,12 +126,10 @@ public class SourceFragment extends ABaseFragment {
         mToolbar.setTitle("");
         mToolbarTitle.setText(getString(R.string.action_source));
 
-        String[] strings = {getString(R.string.source_routing_built_in),
-                getString(R.string.source_routing_diy),
-                getString(R.string.source_routing_file)};
+        String[] strings = {getString(R.string.source_routing_built_in), getString(R.string.source_routing_diy), getString(R.string.source_routing_file)};
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, strings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item_theme_color, strings);
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_theme_color);
         mToolbarSpinner.setAdapter(adapter);
 
         int routing = QueryPreferences.getSourceRouting(getActivity());
@@ -191,7 +189,7 @@ public class SourceFragment extends ABaseFragment {
     }
 
     @Override
-    protected int getMenuItemId() {
+    protected int getNavMenuItemId() {
         return R.id.nav_source;
     }
 

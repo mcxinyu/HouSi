@@ -65,7 +65,7 @@ public class SettingsFragment extends ABaseFragment {
     }
 
     @Override
-    protected int getMenuItemId() {
+    protected int getNavMenuItemId() {
         return R.id.nav_setting;
     }
 

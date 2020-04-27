@@ -42,7 +42,7 @@
         </activity>
 
         <activity
-            android:name=".activity.ReadActivity"
+            android:name=".activity.ReadEditHostsActivity"
             android:label="@string/read_hosts"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

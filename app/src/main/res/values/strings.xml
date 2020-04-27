@@ -93,4 +93,6 @@
     <string name="account_name">anonymous</string>
     <string name="please_grant_permission">请授予相应权限</string>
     <string name="doing_debug">进入调试状态</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_save">保存</string>
 </resources>
