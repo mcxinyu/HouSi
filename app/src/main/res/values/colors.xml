@@ -18,4 +18,6 @@
     <color name="theme_bg_red_left">#fe957f</color>
     <color name="theme_bg_red_right">#FF4081</color>
     <color name="mistyrose">#ffe4e1</color>
+
+    <color name="transparency_90">#50000000</color>
 </resources>

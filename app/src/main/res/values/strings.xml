@@ -22,6 +22,9 @@
     <string name="do_on_reset_hosts">重置 hosts 中…</string>
     <string name="reset_hosts_success">重置 hosts 成功</string>
     <string name="reset_hosts_failure">重置 hosts 失败</string>
+    <string name="do_on_apply_hosts">应用 hosts 文件中…</string>
+    <string name="apply_hosts_success">应用 hosts 成功</string>
+    <string name="apply_hosts_failure">应用 hosts 失败</string>
     <string name="error">好像哪里出错了</string>
     <string name="network_error">网络出错</string>
     <string name="network_connect_error">网络连接出错</string>
@@ -94,5 +97,5 @@
     <string name="please_grant_permission">请授予相应权限</string>
     <string name="doing_debug">进入调试状态</string>
     <string name="action_edit">编辑</string>
-    <string name="action_save">保存</string>
+    <string name="action_apply">应用</string>
 </resources>
