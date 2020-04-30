@@ -20,4 +20,5 @@
     <color name="mistyrose">#ffe4e1</color>
 
     <color name="transparency_90">#50000000</color>
+    <color name="transparency_white">#50ffffff</color>
 </resources>
